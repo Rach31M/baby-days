@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baby Days</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rose:#c0634f;--rose-l:#fdf0ec;--rose-m:#F5C4B3;
+  --sage:#4a7c6f;--sage-l:#e8f2ef;--sage-m:#a8c9c1;
+  --amber:#BA7517;--amber-l:#FAEEDA;--amber-m:#FAC775;
+  --purple:#534AB7;--purple-l:#EEEDFE;--purple-m:#AFA9EC;
+  --blue:#185FA5;--blue-l:#E6F1FB;--blue-m:#85B7EB;
+  --green:#2D7A3A;--green-l:#EAF3DE;--green-m:#97D0A0;
+  --ink:#1a1a1a;--muted:#6b7280;--hint:#9ca3af;
+  --bd:#e5e7eb;--bdh:#d1d5db;--bg:#fff;--bg2:#f9fafb;
+  --r:8px;--rl:12px
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;min-height:100vh}
+.app{max-width:540px;margin:0 auto;padding:.5rem 1rem 4rem}
+.topbar{text-align:center;padding:.875rem 0 1rem;border-bottom:.5px solid var(--bd);margin-bottom:1.25rem}
+.logo{font-size:20px;font-weight:600;color:var(--rose);letter-spacing:-.3px}
+.tagline{font-size:11px;color:var(--muted);margin-top:2px}
+.setup-card{background:var(--rose-l);border:.5px solid var(--rose-m);border-radius:var(--rl);padding:18px;margin-bottom:1rem}
+.setup-title{font-size:14px;font-weight:600;color:var(--rose);margin-bottom:4px}
+.setup-sub{font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.6}
+.field-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.field-label{font-size:11px;color:var(--muted);min-width:90px;flex-shrink:0}
+.field-input{flex:1;padding:9px 11px;border:.5px solid var(--rose-m);border-radius:var(--r);background:var(--bg);color:var(--ink);font-size:13px;font-family:inherit;outline:none}
+.field-input:focus{border-color:var(--rose)}
+.setup-btn{width:100%;padding:11px;border-radius:var(--r);border:none;background:var(--rose);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px}
+.setup-btn:hover{background:#993C1D}
+.privacy-note{font-size:10px;color:var(--hint);margin-top:8px;text-align:center}
+.profile-bar{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--rl);padding:10px 14px;margin-bottom:1.25rem;display:flex;align-items:center;gap:10px}
+.pb-left{flex:1}
+.pb-age{font-size:13px;font-weight:600;color:var(--ink)}
+.pb-loc{font-size:11px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:5px}
+.loc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.pb-change{font-size:11px;color:var(--rose);cursor:pointer;text-decoration:underline;flex-shrink:0}
+.nav{display:flex;gap:4px;margin-bottom:1.25rem;flex-wrap:wrap}
+.ntab{flex:1;min-width:0;padding:8px 3px;border-radius:99px;border:.5px solid var(--bd);background:var(--bg);font-size:9.5px;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;font-family:inherit;white-space:nowrap;font-weight:500}
+.ntab.on{background:var(--rose);color:#fff;border-color:var(--rose)}
+.ntab:hover:not(.on){background:var(--bg2)}
+.screen{display:none}.screen.on{display:block}
+.idea-card{border-radius:var(--rl);padding:14px 16px;margin-bottom:10px;border:.5px solid}
+.ic-rose{background:var(--rose-l);border-color:var(--rose-m)}
+.ic-sage{background:var(--sage-l);border-color:var(--sage-m)}
+.ic-amber{background:var(--amber-l);border-color:var(--amber-m)}
+.ic-purple{background:var(--purple-l);border-color:var(--purple-m)}
+.ic-green{background:var(--green-l);border-color:var(--green-m)}
+.ic-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ic-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.lc-rose{color:var(--rose)}.lc-sage{color:#085041}.lc-amber{color:#633806}.lc-purple{color:#3C3489}.lc-green{color:#1A4D22}
+.ic-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.ic-body{font-size:12px;color:var(--muted);line-height:1.65}
+.ic-tip{font-size:11px;margin-top:8px;padding:7px 10px;border-radius:var(--r);background:rgba(255,255,255,.6);color:var(--muted);line-height:1.5}
+.sleep-guide{border-radius:var(--rl);padding:14px 16px;margin-bottom:10px;border:.5px solid var(--purple-m);background:var(--purple-l)}
+.sg-label{font-size:10px;font-weight:600;letter-spacing:.5px;color:#3C3489;margin-bottom:5px;text-transform:uppercase}
+.sg-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.sg-body{font-size:12px;color:#3C3489;line-height:1.65;margin-bottom:8px}
+.sg-tip{background:rgba(255,255,255,.5);border-radius:var(--r);padding:7px 10px;margin-bottom:6px;font-size:11px;color:#534AB7;line-height:1.5}
+.sleep-qa{border:.5px solid var(--bd);border-radius:var(--rl);padding:11px 13px;background:var(--bg);margin-bottom:7px;cursor:pointer}
+.sleep-qa.open{border-color:var(--purple-m)}
+.sqa-top{display:flex;align-items:center;gap:8px}
+.sqa-icon{font-size:14px;flex-shrink:0}
+.sqa-q{font-size:12px;font-weight:500;color:var(--ink);flex:1;line-height:1.4}
+.sqa-arr{font-size:11px;color:var(--hint);transition:transform .2s;flex-shrink:0}
+.sleep-qa.open .sqa-arr{transform:rotate(180deg)}
+.sqa-body{display:none;font-size:11px;color:var(--muted);line-height:1.65;margin-top:8px;padding-top:8px;border-top:.5px solid var(--bd)}
+.sleep-qa.open .sqa-body{display:block}
+.technique-card{border:.5px solid var(--bd);border-radius:var(--rl);padding:11px 13px;background:var(--bg);margin-bottom:7px;cursor:pointer}
+.technique-card.open{border-color:var(--sage-m)}
+.tec-top{display:flex;align-items:center;gap:8px}
+.tec-badge{font-size:9px;font-weight:600;padding:2px 7px;border-radius:99px;flex-shrink:0}
+.badge-newborn{background:var(--rose-l);color:var(--rose)}
+.badge-all{background:var(--sage-l);color:#085041}
+.badge-older{background:var(--amber-l);color:#633806}
+.tec-title{font-size:12px;font-weight:600;color:var(--ink);flex:1}
+.tec-arr{font-size:11px;color:var(--hint);transition:transform .2s;flex-shrink:0}
+.technique-card.open .tec-arr{transform:rotate(180deg)}
+.tec-body{display:none;font-size:11px;color:var(--muted);line-height:1.65;margin-top:8px;padding-top:8px;border-top:.5px solid var(--bd)}
+.technique-card.open .tec-body{display:block}
+.reassure-strip{background:var(--sage-l);border:.5px solid var(--sage-m);border-radius:var(--rl);padding:12px 14px;margin-bottom:1rem}
+.rs-title{font-size:12px;font-weight:600;color:#085041;margin-bottom:3px}
+.rs-body{font-size:11px;color:#0F6E56;line-height:1.6}
+.dot-legend{display:flex;gap:14px;margin-bottom:.875rem;flex-wrap:wrap}
+.dl-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.dl-dot{width:7px;height:7px;border-radius:50%}
+.normal-card{border:.5px solid var(--bd);border-radius:var(--rl);padding:12px 14px;background:var(--bg);margin-bottom:8px;cursor:pointer}
+.normal-card.open{border-color:var(--sage-m)}
+.nc-top{display:flex;align-items:center;gap:8px}
+.nc-dot{width:7px;height:7px;border-radius:50%;background:var(--sage);flex-shrink:0}
+.nc-dot.amber{background:var(--amber)}.nc-dot.red{background:#E24B4A}
+.nc-q{font-size:12px;font-weight:500;color:var(--ink);flex:1;line-height:1.4}
+.nc-arr{font-size:11px;color:var(--hint);transition:transform .2s;flex-shrink:0}
+.normal-card.open .nc-arr{transform:rotate(180deg)}
+.nc-body{display:none;font-size:11px;color:var(--muted);line-height:1.65;margin-top:8px;padding-top:8px;border-top:.5px solid var(--bd)}
+.normal-card.open .nc-body{display:block}
+.loc-banner{border-radius:var(--rl);padding:10px 14px;margin-bottom:1rem;display:flex;align-items:center;gap:8px;font-size:11px;line-height:1.5}
+.lb-green{background:var(--sage-l);border:.5px solid var(--sage-m);color:#085041}
+.lb-amber{background:var(--amber-l);border:.5px solid var(--amber-m);color:#633806}
+.lb-change{font-size:10px;cursor:pointer;text-decoration:underline;flex-shrink:0;white-space:nowrap;font-weight:500}
+.checklist-card{background:var(--green-l);border:.5px solid var(--green-m);border-radius:var(--rl);padding:14px 16px;margin-bottom:10px}
+.cl-title{font-size:13px;font-weight:600;color:#1A4D22;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.cl-progress{font-size:11px;font-weight:400;color:#2D7A3A}
+.cl-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cl-item{display:flex;align-items:flex-start;gap:7px;padding:4px 0;cursor:pointer}
+.cl-box{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--green-m);flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;margin-top:1px}
+.cl-box.checked{background:var(--green);border-color:var(--green)}
+.cl-box.checked::after{content:'';display:block;width:4px;height:7px;border:1.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px)}
+.cl-text{font-size:11px;color:#1A4D22;line-height:1.4}
+.cl-text.checked{text-decoration:line-through;opacity:.55}
+.cl-reset{font-size:10px;color:#2D7A3A;cursor:pointer;text-decoration:underline;margin-top:8px;display:inline-block}
+.tag-filter{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.tf{font-size:10px;padding:5px 11px;border-radius:99px;border:.5px solid var(--bd);background:var(--bg);color:var(--muted);cursor:pointer;font-family:inherit;font-weight:500}
+.tf.on{background:var(--amber);color:#fff;border-color:var(--amber)}
+.place-card{border:.5px solid var(--bd);border-radius:var(--rl);padding:12px 14px;background:var(--bg);margin-bottom:8px}
+.place-card.open{border-color:var(--amber-m)}
+.pc-top{display:flex;align-items:center;gap:9px;cursor:pointer}
+.pc-icon{width:34px;height:34px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--amber-l)}
+.pc-info{flex:1;min-width:0}
+.pc-title{font-size:12px;font-weight:600;color:var(--ink)}
+.pc-tags{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap}
+.pc-tag{font-size:9px;padding:2px 6px;border-radius:99px;font-weight:500}
+.tag-foot{background:var(--green-l);color:#1A4D22}
+.tag-drive{background:var(--blue-l);color:#0C447C}
+.tag-free{background:var(--amber-l);color:#633806}
+.pc-arr{color:var(--hint);font-size:11px;transition:transform .2s;flex-shrink:0}
+.place-card.open .pc-arr{transform:rotate(180deg)}
+.pc-body{display:none;margin-top:10px;padding-top:10px;border-top:.5px solid var(--bd)}
+.place-card.open .pc-body{display:block}
+.pc-desc{font-size:11px;color:var(--muted);line-height:1.65;margin-bottom:8px}
+.pc-tips{margin-bottom:10px}
+.pc-tip-item{font-size:10px;color:var(--muted);line-height:1.5;padding:2px 0;display:flex;gap:6px}
+.pc-tip-item::before{content:'→';color:var(--amber);flex-shrink:0}
+.local-btns{display:flex;gap:6px;flex-wrap:wrap}
+.loc-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:var(--r);border:.5px solid var(--bd);background:var(--bg);font-size:10px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
+.loc-btn.maps{background:var(--blue-l);border-color:var(--blue-m);color:#0C447C}
+.loc-btn.search{background:var(--sage-l);border-color:var(--sage-m);color:#085041}
+.loc-btn.ext{background:var(--rose-l);border-color:var(--rose-m);color:var(--rose)}
+.cat-nav{display:flex;gap:5px;margin-bottom:1.25rem;flex-wrap:wrap}
+.ctab{font-size:10px;padding:5px 10px;border-radius:99px;border:.5px solid var(--bd);background:var(--bg);color:var(--muted);cursor:pointer;white-space:nowrap;font-family:inherit;font-weight:500}
+.ctab.on{background:var(--rose);color:#fff;border-color:var(--rose)}
+.cat-section{display:none}.cat-section.on{display:block}
+.tip-card{border:.5px solid var(--bd);border-radius:var(--rl);padding:13px 15px;background:var(--bg);margin-bottom:8px;cursor:pointer}
+.tip-card.open{border-color:var(--rose-m)}
+.tc-top{display:flex;align-items:center;gap:10px}
+.tc-icon{width:36px;height:36px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.tc-head{flex:1}
+.tc-title{font-size:13px;font-weight:600;color:var(--ink)}
+.tc-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.tc-arr{color:var(--hint);font-size:11px;transition:transform .2s;flex-shrink:0}
+.tip-card.open .tc-arr{transform:rotate(180deg)}
+.tc-body{display:none;margin-top:10px;padding-top:10px;border-top:.5px solid var(--bd)}
+.tip-card.open .tc-body{display:block}
+.tc-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.ts{display:flex;gap:9px;align-items:flex-start;font-size:11px;color:var(--muted);line-height:1.55}
+.ts-n{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;margin-top:1px}
+.n-rose{background:var(--rose-l);color:var(--rose)}.n-sage{background:var(--sage-l);color:#085041}
+.n-amber{background:var(--amber-l);color:#633806}.n-purple{background:var(--purple-l);color:#3C3489}
+.n-green{background:var(--green-l);color:#1A4D22}
+.tc-remember{background:var(--amber-l);border-radius:var(--r);padding:8px 10px;font-size:11px;color:#633806;line-height:1.5}
+.tc-reassure{background:var(--sage-l);border-radius:var(--r);padding:8px 10px;font-size:11px;color:#085041;line-height:1.5;margin-top:6px}
+.help-link{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--r);border:.5px solid var(--bd);background:var(--bg);cursor:pointer;margin-bottom:7px}
+.help-link:hover{border-color:var(--bdh);background:var(--bg2)}
+.hl-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.hl-title{font-size:12px;font-weight:600;color:var(--ink)}
+.hl-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.hl-arr{margin-left:auto;color:var(--hint);font-size:14px}
+.sec-t{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:.4px;margin-top:1rem;text-transform:uppercase}
+.sec-s{font-size:11px;color:var(--muted);margin-bottom:.75rem;line-height:1.5}
+.today-date{font-size:11px;color:var(--muted);margin-bottom:.5rem}
+.week-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--rose-l);color:var(--rose);border:.5px solid var(--rose-m);margin-bottom:.875rem}
+.disclaimer{font-size:10px;color:var(--hint);line-height:1.6;margin-top:1.25rem;padding-top:1rem;border-top:.5px solid var(--bd)}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="topbar"><div class="logo">baby days</div><div class="tagline">simple daily ideas for you and your baby</div></div>
+<div id="setup-section">
+  <div class="setup-card">
+    <div class="setup-title">Welcome to Baby Days 🌸</div>
+    <div class="setup-sub">Enter your baby's birth date and we'll personalise everything to their exact age — updating automatically every day.</div>
+    <div class="field-row"><span class="field-label">Baby's birthday</span><input type="date" id="dob-input" class="field-input" max=""></div>
+    <div class="field-row"><span class="field-label">Your postcode</span><input type="text" id="postcode-input" class="field-input" placeholder="e.g. LN5 8AB" maxlength="8"></div>
+    <button class="setup-btn" onclick="saveSetup()">Let's go →</button>
+    <div class="privacy-note">Your postcode never leaves your device — only used to personalise local search links.</div>
+  </div>
+</div>
+<div id="age-section" style="display:none">
+  <div class="profile-bar">
+    <div class="pb-left"><div class="pb-age" id="age-display"></div><div class="pb-loc"><div class="loc-dot" id="loc-dot"></div><span id="loc-display"></span></div></div>
+    <div class="pb-change" onclick="showSetup()">edit</div>
+  </div>
+</div>
+<div id="main-content" style="display:none">
+  <div class="nav">
+    <button class="ntab on" onclick="showTab('today',this)">Today</button>
+    <button class="ntab" onclick="showTab('sleep',this)">Sleep</button>
+    <button class="ntab" onclick="showTab('normal',this)">Normal?</button>
+    <button class="ntab" onclick="showTab('out',this)">Out &amp; about</button>
+    <button class="ntab" onclick="showTab('home',this)">Home alone</button>
+    <button class="ntab" onclick="showTab('help',this)">Help</button>
+  </div>
+  <div id="tab-today" class="screen on">
+    <div class="today-date" id="today-date"></div>
+    <div class="week-badge" id="week-badge"></div>
+    <div id="today-cards"></div>
+    <div class="disclaimer">Ideas are general guidance only. Every baby is different — trust your instincts and always speak to your health visitor or GP if you have concerns.</div>
+  </div>
+  <div id="tab-sleep" class="screen">
+    <div id="sleep-guide-card"></div>
+    <div class="sec-t">Sleep techniques for this age</div>
+    <div id="sleep-techniques"></div>
+    <div class="sec-t">Common sleep questions</div>
+    <div id="sleep-qa-cards"></div>
+    <div class="sec-t">Safe sleep resources</div>
+    <div class="help-link" onclick="openLink('https://www.lullabytrust.org.uk/safer-sleep-advice/')"><div class="hl-icon" style="background:var(--purple-l)">🌙</div><div><div class="hl-title">The Lullaby Trust — safer sleep advice</div><div class="hl-sub">Evidence-based safe sleep guidance for babies</div></div><span class="hl-arr">›</span></div>
+    <div class="help-link" onclick="openLink('https://www.lullabytrust.org.uk/safer-sleep-advice/safer-sleep-for-babies/')"><div class="hl-icon" style="background:var(--purple-l)">ℹ️</div><div><div class="hl-title">The Lullaby Trust — SIDS information</div><div class="hl-sub">Understanding and reducing the risk of sudden infant death</div></div><span class="hl-arr">›</span></div>
+    <div class="disclaimer">Never place loose items, pillows or duvets in a cot with a baby under 12 months.</div>
+  </div>
+  <div id="tab-normal" class="screen">
+    <div class="reassure-strip" id="reassure-strip"></div>
+    <div class="dot-legend">
+      <div class="dl-item"><div class="dl-dot" style="background:var(--sage)"></div>Normal</div>
+      <div class="dl-item"><div class="dl-dot" style="background:var(--amber)"></div>Mention to health visitor</div>
+      <div class="dl-item"><div class="dl-dot" style="background:#E24B4A"></div>See GP / call 111</div>
+    </div>
+    <div id="normal-cards"></div>
+    <div class="disclaimer">Reassurance only — not medical advice. Always contact your GP, health visitor or 111 if worried.</div>
+  </div>
+  <div id="tab-out" class="screen">
+    <div id="loc-banner"></div>
+    <div class="checklist-card">
+      <div class="cl-title">🎒 Baby bag checklist <span class="cl-progress" id="cl-progress"></span></div>
+      <div class="cl-grid" id="checklist-grid"></div>
+      <span class="cl-reset" onclick="resetChecklist()">↺ Reset for next trip</span>
+    </div>
+    <div class="idea-card ic-amber"><div class="ic-top"><span>⏰</span><span class="ic-label lc-amber">Timing tip</span></div><div class="ic-title">Leave right after a feed</div><div class="ic-body">A fed, winded baby is your best travelling companion. Time your departure just after a feed and you'll likely get a full outing before the next one is due.</div><div class="ic-tip">💡 Give yourself twice as long as you think. The first trip out is the hardest — it gets easier every single time.</div></div>
+    <div class="idea-card ic-rose"><div class="ic-top"><span>🧘</span><span class="ic-label lc-rose">Mindset</span></div><div class="ic-title">Lower the bar completely</div><div class="ic-body">Getting out of the door and back counts as a complete success. You don't need a destination, a plan, or to stay out long.</div><div class="ic-tip">💡 Pick somewhere low-pressure and walkable for your first few trips — a park bench, a slow loop round the block, a coffee shop.</div></div>
+    <div class="sec-t">Safety &amp; feeding out</div>
+    <div class="help-link" onclick="openLink('https://www.which.co.uk/reviews/child-car-seats/article/how-to-fit-a-car-seat-aQFXB4y8kBUb')"><div class="hl-icon" style="background:var(--blue-l)">🚗</div><div><div class="hl-title">Car seat safety — Which? guide</div><div class="hl-sub">How to fit and check your car seat correctly</div></div><span class="hl-arr">›</span></div>
+    <div class="help-link" onclick="openLink('https://www.nhs.uk/conditions/baby/breastfeeding-and-bottle-feeding/breastfeeding/breastfeeding-in-public/')"><div class="hl-icon" style="background:var(--rose-l)">🤱</div><div><div class="hl-title">NHS — breastfeeding in public</div><div class="hl-sub">Your legal rights and practical tips</div></div><span class="hl-arr">›</span></div>
+    <div class="help-link" onclick="openLink('https://www.lullabytrust.org.uk/safer-sleep-advice/car-seats-and-sleeping/')"><div class="hl-icon" style="background:var(--purple-l)">😴</div><div><div class="hl-title">Lullaby Trust — sleeping in car seats</div><div class="hl-sub">Why to limit time sleeping in car seats</div></div><span class="hl-arr">›</span></div>
+    <div class="sec-t">Ideas for where to go</div>
+    <div class="sec-s" id="places-sub">Tap a place for ideas and tips, then use the buttons to find somewhere near you.</div>
+    <div class="tag-filter">
+      <button class="tf on" onclick="filterPlaces('all',this)">All</button>
+      <button class="tf" onclick="filterPlaces('foot',this)">🚶 On foot</button>
+      <button class="tf" onclick="filterPlaces('drive',this)">🚗 By car</button>
+      <button class="tf" onclick="filterPlaces('free',this)">💚 Free</button>
+    </div>
+    <div id="places-list"></div>
+    <div class="disclaimer">Links open in a new tab or your Maps app.</div>
+  </div>
+  <div id="tab-home" class="screen">
+    <div class="reassure-strip" style="margin-bottom:1rem"><div class="rs-title">You are not the first person to wonder how to shower</div><div class="rs-body">These are the practical questions every new parent has and nobody talks about. You are doing brilliantly.</div></div>
+    <div class="cat-nav">
+      <button class="ctab on" onclick="showCat('self',this)">Looking after you</button>
+      <button class="ctab" onclick="showCat('feeding',this)">Feeding</button>
+      <button class="ctab" onclick="showCat('settling',this)">Settling baby</button>
+      <button class="ctab" onclick="showCat('solo',this)">Solo logistics</button>
+    </div>
+    <div class="cat-section on" id="cat-self">
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--blue-l)">🚿</div><div class="tc-head"><div class="tc-title">How to shower safely alone</div><div class="tc-sub">One of the most common worries for new mums</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-rose">1</div><div><strong>Time it after a feed.</strong> A fed, winded baby gives you the best window — usually 45–90 minutes of settled time.</div></div><div class="ts"><div class="ts-n n-rose">2</div><div><strong>Put baby somewhere safe first.</strong> A bouncy chair on the bathroom floor, play mat, or their cot. Safe and flat is all that matters.</div></div><div class="ts"><div class="ts-n n-rose">3</div><div><strong>Bring the bouncy chair into the bathroom.</strong> Outside the shower door so you can maintain eye contact and talk to them throughout.</div></div><div class="ts"><div class="ts-n n-rose">4</div><div><strong>If they cry, that's okay.</strong> 5 minutes of crying in a safe place is not harmful. You need to function.</div></div></div><div class="tc-remember"><strong>Key rule:</strong> Never leave baby on a raised surface unattended — sofa, changing table, bed. Always on the floor or in their cot.</div><div class="tc-reassure">💚 By week 8–10 most babies happily sit in a bouncy chair while you shower — the sound of water is often calming.</div></div></div>
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--rose-l)">🍽️</div><div class="tc-head"><div class="tc-title">Eating properly when you're alone</div><div class="tc-sub">You cannot pour from an empty cup</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-sage">1</div><div><strong>One-handed food is your friend.</strong> Toast, bananas, cheese, yogurt, cereal bars. Stock these rather than relying on cooking.</div></div><div class="ts"><div class="ts-n n-sage">2</div><div><strong>Eat when baby eats.</strong> During a feed you often have one hand free. Have snacks within reach of your feeding spot always.</div></div><div class="ts"><div class="ts-n n-sage">3</div><div><strong>Hydration — especially if breastfeeding.</strong> Keep a large water bottle next to your feeding spot. Thirst feels identical to exhaustion at this stage.</div></div></div><div class="tc-reassure">💚 Eating and drinking enough directly affects your energy, milk supply and mood. It is not selfish — it is essential.</div></div></div>
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--green-l)">😴</div><div class="tc-head"><div class="tc-title">Resting safely when you're alone</div><div class="tc-sub">Sleep deprivation is a genuine health issue</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-green">1</div><div><strong>Put baby in their safe sleep space</strong> and lie down nearby. Even 20 minutes of eyes-closed rest is restorative.</div></div><div class="ts"><div class="ts-n n-green">2</div><div><strong>Never sleep on the sofa with a baby.</strong> Sofa sleeping with an infant is one of the highest risk situations for sudden infant death — even accidentally drifting off.</div></div><div class="ts"><div class="ts-n n-green">3</div><div><strong>If you feel you might fall asleep while feeding,</strong> move to your bed on a firm surface with no loose bedding near baby. Safer than the sofa.</div></div></div><div class="tc-remember"><strong>If dangerously exhausted,</strong> call a friend, family member or health visitor. There is no shame — exhaustion at this level is a health issue.</div></div></div>
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--purple-l)">🧘</div><div class="tc-head"><div class="tc-title">When it feels overwhelming</div><div class="tc-sub">Managing big emotions alone with a crying baby</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-purple">1</div><div><strong>Put baby down safely and step away.</strong> A few minutes of crying in a safe cot does no harm. Coming back calmer is better than staying and spiralling.</div></div><div class="ts"><div class="ts-n n-purple">2</div><div><strong>Text someone.</strong> Even 'today is hard' to a friend matters. Isolation makes hard days feel unsurvivable.</div></div><div class="ts"><div class="ts-n n-purple">3</div><div><strong>If most days feel this way,</strong> speak to your GP. Postnatal anxiety and depression are health conditions, not character flaws, and treatment works.</div></div></div><div class="tc-remember"><strong>Never shake a baby.</strong> If you feel you might lose control, put baby down safely, leave the room and call someone immediately. Cry-sis: 08451 228 669.</div></div></div>
+    </div>
+    <div class="cat-section" id="cat-feeding">
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--amber-l)">🍼</div><div class="tc-head"><div class="tc-title">Making a bottle safely alone</div><div class="tc-sub">When baby is crying and hungry and you're by yourself</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-amber">1</div><div><strong>Put baby somewhere safe first.</strong> A crying baby is a safe baby. You need both hands free.</div></div><div class="ts"><div class="ts-n n-amber">2</div><div><strong>Keep a flask of boiled water ready.</strong> 70°C+ water in a vacuum flask means you can make a bottle in under a minute without waiting for a kettle.</div></div><div class="ts"><div class="ts-n n-amber">3</div><div><strong>Pre-measure formula in a dispenser.</strong> A few pounds from any supermarket — pre-measured portions ready to add without struggling one-handed.</div></div><div class="ts"><div class="ts-n n-amber">4</div><div><strong>Never microwave formula.</strong> It creates hot spots that can burn baby's mouth even if the bottle feels cool outside.</div></div></div><div class="tc-reassure">💚 Ready-to-feed cartons (just open and pour) are more expensive but brilliant for night feeds and hard moments — zero preparation at all.</div></div></div>
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--rose-l)">🤱</div><div class="tc-head"><div class="tc-title">Breastfeeding positions that work solo</div><div class="tc-sub">Managing without a second pair of hands</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-rose">1</div><div><strong>Set up your feeding station before baby wakes.</strong> Water, phone, snack, muslin, remote — all within arm's reach.</div></div><div class="ts"><div class="ts-n n-rose">2</div><div><strong>Side-lying feeding.</strong> Lie on your side with baby facing you at breast height. Brilliant for night feeds — no sitting up required.</div></div><div class="ts"><div class="ts-n n-rose">3</div><div><strong>Rugby hold for latch difficulties.</strong> Tuck baby under your arm like a rugby ball — gives much more control without needing help.</div></div><div class="ts"><div class="ts-n n-rose">4</div><div><strong>National Breastfeeding Helpline: 0300 100 0212.</strong> Free, 9:30am–9:30pm every day. They talk you through positions on the phone.</div></div></div></div></div>
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--sage-l)">🥣</div><div class="tc-head"><div class="tc-title">Weaning safely alone (from ~6 months)</div><div class="tc-sub">Managing mess and safety when it's just you</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-sage">1</div><div><strong>Always within arm's reach.</strong> Never leave a weaning baby alone with food — even for a few seconds.</div></div><div class="ts"><div class="ts-n n-sage">2</div><div><strong>Know gagging vs choking.</strong> Gagging is noisy — baby in control, red-faced. Choking is silent — baby pale or blue. Act immediately for choking.</div></div><div class="ts"><div class="ts-n n-sage">3</div><div><strong>Strip to a nappy for meals</strong> with a splash mat under the high chair — cleanup takes 2 minutes not 20.</div></div></div><div class="tc-remember"><strong>St John Ambulance</strong> baby &amp; child first aid (free online): <span style="color:var(--blue);cursor:pointer;text-decoration:underline" onclick="openLink('https://www.sja.org.uk/get-advice/baby-and-child-first-aid/')">sja.org.uk →</span></div></div></div>
+    </div>
+    <div class="cat-section" id="cat-settling">
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--purple-l)">😭</div><div class="tc-head"><div class="tc-title">When baby won't stop crying</div><div class="tc-sub">A step-by-step approach to try</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-purple">1</div><div><strong>Check the basics.</strong> Fed? Winded? Nappy clean? Too hot or cold? Overtired? These cover the vast majority of causes.</div></div><div class="ts"><div class="ts-n n-purple">2</div><div><strong>Try motion.</strong> Walking on your shoulder, bouncy chair jiggled with your foot, or a sling. Rhythmic movement calms the vestibular system.</div></div><div class="ts"><div class="ts-n n-purple">3</div><div><strong>Try white noise.</strong> Extractor fan, shower running, or a white noise app at moderate volume. Womb-like sounds calm many babies quickly.</div></div><div class="ts"><div class="ts-n n-purple">4</div><div><strong>Change the environment.</strong> Going outside — even onto a doorstep — often interrupts the crying cycle. Cool air works surprisingly often.</div></div><div class="ts"><div class="ts-n n-purple">5</div><div><strong>Skin to skin as a reset.</strong> Undress baby to their nappy and hold against your bare chest. Regulates their nervous system.</div></div></div><div class="tc-remember"><strong>PURPLE crying</strong> — Peak, Unexpected, Resists soothing, Pain-like face, Long lasting, Evening. Normal phase — not a sign anything is wrong. <span style="color:var(--blue);cursor:pointer;text-decoration:underline" onclick="openLink('https://www.purplecrying.info')">purplecrying.info →</span></div></div></div>
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--sage-l)">💤</div><div class="tc-head"><div class="tc-title">Getting baby to sleep alone</div><div class="tc-sub">When there's no one to take turns with</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-sage">1</div><div><strong>Watch for the sleep window.</strong> First yawn or eye rub is your cue. Overtired babies are much harder to settle.</div></div><div class="ts"><div class="ts-n n-sage">2</div><div><strong>Walk + shush + jiggle.</strong> Upright on your shoulder, gentle rhythmic patting, steady shushing. Slow everything down as they drowse.</div></div><div class="ts"><div class="ts-n n-sage">3</div><div><strong>The transfer.</strong> Lower bottom-first, then back, then head last. Keep your hand on their chest for 30–60 seconds after.</div></div><div class="ts"><div class="ts-n n-sage">4</div><div><strong>A sling for contact naps.</strong> Hands free while baby naps on you. Follow TICKS guidelines for safe babywearing.</div></div></div><div class="tc-reassure">💚 There is no single right way. What works often changes week to week. That is normal.</div></div></div>
+    </div>
+    <div class="cat-section" id="cat-solo">
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--blue-l)">🚪</div><div class="tc-head"><div class="tc-title">Answering the door or doing a quick task</div><div class="tc-sub">Safely leaving baby for a few minutes</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-rose">1</div><div><strong>Always put baby down first.</strong> Flat, firm surface — play mat on the floor, bouncy chair on the floor, or cot. Never unattended on a sofa or raised surface.</div></div><div class="ts"><div class="ts-n n-rose">2</div><div><strong>A play mat in the hallway</strong> next to the front door is perfectly safe for babies who can't yet roll.</div></div><div class="ts"><div class="ts-n n-rose">3</div><div><strong>It's okay to not answer.</strong> No delivery or visitor is more important than your baby's safety.</div></div></div><div class="tc-reassure">💚 A crying baby in a safe place is safe. You can take 2–3 minutes to answer the door, use the loo, or make a drink.</div></div></div>
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--green-l)">🏠</div><div class="tc-head"><div class="tc-title">Keeping the house ticking alone</div><div class="tc-sub">Managing basics without burning out</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-green">1</div><div><strong>One task per nap.</strong> Pick just one thing. Some naps that one thing is resting. That is valid.</div></div><div class="ts"><div class="ts-n n-green">2</div><div><strong>Bouncy chair in every room.</strong> A safe spot in the kitchen, bathroom and living room means you can do small things without carrying baby everywhere.</div></div><div class="ts"><div class="ts-n n-green">3</div><div><strong>Ask for specific help.</strong> 'Could you bring dinner on Tuesday?' is better than 'let me know if you need anything'. Make it easy for people.</div></div></div><div class="tc-reassure">💚 The house does not need to be tidy. Your baby does not care about the laundry. This season is temporary.</div></div></div>
+      <div class="tip-card" onclick="this.classList.toggle('open')"><div class="tc-top"><div class="tc-icon" style="background:var(--purple-l)">🌙</div><div class="tc-head"><div class="tc-title">Surviving night feeds alone</div><div class="tc-sub">Making the hard hours manageable</div></div><span class="tc-arr">▾</span></div><div class="tc-body"><div class="tc-steps"><div class="ts"><div class="ts-n n-purple">1</div><div><strong>Set up a night station.</strong> Everything within arm's reach — nappies, wipes, formula/muslin, water, phone, a dim lamp. No big lights on.</div></div><div class="ts"><div class="ts-n n-purple">2</div><div><strong>Keep it low light and boring.</strong> Bright lights signal daytime to a developing body clock. Night feeds should be dull for both of you.</div></div><div class="ts"><div class="ts-n n-purple">3</div><div><strong>Use a red night light.</strong> Red wavelengths don't suppress melatonin like white or blue light — a cheap plug-in red light is a game changer.</div></div></div><div class="tc-reassure">💚 Night feeds are temporary. Every one you do is keeping your baby healthy and growing — even at 3am.</div></div></div>
+    </div>
+    <div class="disclaimer">General guidance only. For any concerns contact your health visitor, GP or call 111. In an emergency call 999.</div>
+  </div>
+  <div id="tab-help" class="screen">
+    <div class="sec-t" style="margin-top:0">If you're worried right now</div>
+    <div class="help-link" onclick="openLink('tel:999')"><div class="hl-icon" style="background:#FCEBEB">🚨</div><div><div class="hl-title" style="color:#A32D2D">999 — Emergency</div><div class="hl-sub">Baby not breathing, unconscious, or immediate danger</div></div><span class="hl-arr" style="color:#A32D2D">›</span></div>
+    <div class="help-link" onclick="openLink('tel:111')"><div class="hl-icon" style="background:var(--blue-l)">📞</div><div><div class="hl-title">111 — tap to call</div><div class="hl-sub">NHS non-emergency · available 24/7</div></div><span class="hl-arr">›</span></div>
+    <div class="help-link" onclick="openLink('https://111.nhs.uk/service/urgent-medical-help-for-babies-and-children/')"><div class="hl-icon" style="background:var(--blue-l)">📱</div><div><div class="hl-title">111 online — babies &amp; children</div><div class="hl-sub">Get advice without calling</div></div><span class="hl-arr">›</span></div>
+    <div class="sec-t">NHS guidance</div>
+    <div class="help-link" onclick="openLink('https://www.nhs.uk/conditions/baby/health/when-to-call-your-doctor-or-health-visitor/')"><div class="hl-icon" style="background:var(--sage-l)">🩺</div><div><div class="hl-title">When to call your doctor or health visitor</div><div class="hl-sub">Signs to watch for in your baby</div></div><span class="hl-arr">›</span></div>
+    <div class="help-link" onclick="openLink('https://www.nhs.uk/conditions/baby/health/newborn-health-problems/')"><div class="hl-icon" style="background:var(--sage-l)">👶</div><div><div class="hl-title">NHS — newborn health</div><div class="hl-sub">Common newborn conditions</div></div><span class="hl-arr">›</span></div>
+    <div class="help-link" onclick="openLink('https://www.nhs.uk/conditions/baby/weaning-and-feeding/baby-and-toddler-feeding-tips/')"><div class="hl-icon" style="background:var(--sage-l)">🥣</div><div><div class="hl-title">NHS — feeding and weaning guide</div><div class="hl-sub">Breast, bottle and starting solid foods</div></div><span class="hl-arr">›</span></div>
+    <div class="sec-t">Support for you</div>
+    <div class="help-link" onclick="openLink('https://www.nhs.uk/mental-health/conditions/post-natal-depression/overview/')"><div class="hl-icon" style="background:var(--rose-l)">🫶</div><div><div class="hl-title">NHS — postnatal depression</div><div class="hl-sub">Signs, symptoms and where to get help</div></div><span class="hl-arr">›</span></div>
+    <div class="help-link" onclick="openLink('https://www.pandasfoundation.org.uk')"><div class="hl-icon" style="background:var(--rose-l)">💬</div><div><div class="hl-title">PANDAS Foundation</div><div class="hl-sub">Perinatal mental health support &amp; helpline</div></div><span class="hl-arr">›</span></div>
+    <div class="help-link" onclick="openLink('https://www.nct.org.uk/baby-toddler/new-parents/support-groups-and-helplines')"><div class="hl-icon" style="background:var(--rose-l)">👥</div><div><div class="hl-title">NCT — new parent support</div><div class="hl-sub">Helplines and local support groups</div></div><span class="hl-arr">›</span></div>
+    <div class="disclaimer">In an emergency always call 999. Baby Days does not provide medical advice.</div>
+  </div>
+</div>
+<script>
+var DOB_KEY='babydaysdob_v5';
+var PC_KEY='babydayspc_v5';
+var CL_KEY='babydayscl_v5';
+var userPostcode='';
+
+var checklistItems=[
+  {id:'nappies',label:'Nappies (2-3 min)'},
+  {id:'wipes',label:'Baby wipes'},
+  {id:'bags',label:'Nappy bags'},
+  {id:'change',label:'Changing mat'},
+  {id:'spare',label:'Spare outfit'},
+  {id:'feed',label:'Milk / formula'},
+  {id:'muslin',label:'Muslins x2'},
+  {id:'dummy',label:'Dummy (if used)'},
+  {id:'toy',label:'Small toy'},
+  {id:'sun',label:'Sun cream / hat'},
+  {id:'blanket',label:'Blanket / layer'},
+  {id:'you',label:'Your snack and water'},
+];
+
+var places=[
+  {tags:['foot','free'],icon:'🌳',title:'Park or green space',desc:'Fresh air, natural light and nature sounds are all genuinely stimulating for babies at any age.',tips:['Look for flat paths suitable for prams','Many parks have cafes - a hot drink is rarely optional','Bird and wind sounds are brilliant sensory input'],searches:[{label:'Map: Open in Maps',type:'maps',query:'park'},{label:'Search: Find parks near me',type:'search',query:'parks baby friendly near'}]},
+  {tags:['foot','free'],icon:'📚',title:'Library - Rhyme Time',desc:'Most UK libraries run free Rhyme Time or Baby Bounce sessions from birth.',tips:['Free, warm, great place to meet local parents','No booking usually needed','Ask at the desk - not always advertised online'],searches:[{label:'Search: Rhyme Time near me',type:'search',query:'library rhyme time baby bounce near'},{label:'Map: Find my library',type:'maps',query:'library'}]},
+  {tags:['foot','free'],icon:'☕',title:'Baby-friendly cafe',desc:'Getting out and being around other humans is genuinely restorative.',tips:['Look for space for a pram and soft seating','A cup of tea is enough - you do not need to spend much','Check for baby change if needed before you go'],searches:[{label:'Map: Baby cafes near me',type:'maps',query:'baby friendly cafe'},{label:'Search: Local cafes',type:'search',query:'baby friendly cafe near'}]},
+  {tags:['foot','free'],icon:'🤝',title:'Baby or toddler group',desc:'Meeting other parents with babies the same age is one of the best things you can do.',tips:['Ask your health visitor - they know every local group','Facebook groups for local mums are a goldmine','NCT groups are open to non-members too'],searches:[{label:'Search: Baby groups near me',type:'search',query:'baby groups near'},{label:'Search: NCT activities',type:'search',query:'NCT baby activities near'},{label:'Link: Find family support',type:'link',url:'https://www.gov.uk/find-family-support'}]},
+  {tags:['foot'],icon:'🏊',title:'Baby swimming',desc:'Many leisure centres run parent-and-baby sessions from around 6 weeks.',tips:['Bring a large warm towel and dress yourself first','Many offer a free taster session','Babies often sleep brilliantly after swimming'],searches:[{label:'Map: Leisure centres near me',type:'maps',query:'leisure centre swimming pool'},{label:'Search: Baby swimming near me',type:'search',query:'baby swimming classes near'}]},
+  {tags:['foot','free'],icon:'🧸',title:'Soft play (6 months+)',desc:'Once sitting, soft play gives brilliant sensory stimulation. Weekday mornings are much calmer.',tips:['Most soft plays have a dedicated baby area','Under-1s are often free entry','Early weekday mornings are a completely different experience'],searches:[{label:'Map: Soft play near me',type:'maps',query:'soft play'},{label:'Search: Soft play near me',type:'search',query:'soft play baby near'}]},
+  {tags:['drive'],icon:'🌊',title:'Beach or nature reserve',desc:'Incredible sensory input - wind, wave sounds, fresh air. Great from around 4 months.',tips:['Carry baby in a sling on sand - prams struggle','Sun cream and shade essential in warmer months','Even a short visit counts'],searches:[{label:'Map: Beaches near me',type:'maps',query:'beach'},{label:'Map: Nature reserves near me',type:'maps',query:'nature reserve'}]},
+  {tags:['drive','free'],icon:'🏛️',title:'Museum or gallery',desc:'Many UK museums are free and pram-friendly. Interesting visuals and warm.',tips:['Check for pram access and lifts before visiting','Many run specific baby or quiet hours sessions','Midweek mornings are the calmest'],searches:[{label:'Map: Museums near me',type:'maps',query:'museum gallery'},{label:'Search: Free museums near me',type:'search',query:'free museum gallery baby friendly near'}]},
+  {tags:['drive'],icon:'🌸',title:'Garden centre',desc:'Genuinely underrated baby outing. Warm, spacious, wide aisles and usually a good cafe.',tips:['Great in winter - warm regardless of weather','Babies find plant colours and scents engaging','Almost always pram-friendly throughout'],searches:[{label:'Map: Garden centres near me',type:'maps',query:'garden centre'}]},
+  {tags:['foot','free'],icon:'🏃',title:'Parkrun - buggies welcome',desc:'Free weekly 5k walk or run in your local park. Walking is completely fine.',tips:['Register free at parkrun.org.uk','Check your local event for buggy-friendly routes','A great way to get moving again and meet people'],searches:[{label:'Search: My local Parkrun',type:'search',query:'parkrun near'},{label:'Link: parkrun.org.uk',type:'link',url:'https://www.parkrun.org.uk/events/'}]},
+  {tags:['foot','free'],icon:'🏠',title:"Children's centre / Stay and Play",desc:'Run free or low-cost sessions, often with a health visitor present.',tips:['Often the best place for informal health visitor advice','Search gov.uk/find-family-support for your nearest'],searches:[{label:'Link: Find family support',type:'link',url:'https://www.gov.uk/find-family-support'},{label:'Search: Childrens centres near me',type:'search',query:"children's centre stay play near"}]},
+  {tags:['drive'],icon:'🐾',title:'Farm or petting zoo',desc:'From around 4-5 months, babies are fascinated by animals - the movement, sounds and colours.',tips:['Look for farms with covered areas for wet weather','Always wash hands thoroughly after animal areas','Under-1s are often free entry'],searches:[{label:'Map: Farms near me',type:'maps',query:'farm petting zoo'},{label:'Search: Baby-friendly farms',type:'search',query:'farm day out baby near'}]},
+];
+
+var ageData=[
+{range:[0,0],weekLabel:'Week 1',
+today:[
+{color:"ic-rose",lc:"lc-rose",icon:"🌸",cat:"CLOSENESS",title:"Skin to skin - as much as possible",body:"In week 1 your baby has just arrived in a completely alien world. Skin to skin on your bare chest regulates their temperature, heart rate and breathing, and signals the world is safe. Even 20 minutes is powerful.",tip:"Both partners can do this, not just mums. It supports milk supply, latch and bonding for both."},
+{color:"ic-sage",lc:"lc-sage",icon:"👁️",cat:"VISION",title:"Your face is their whole world",body:"At exactly 1 week old your baby can see clearly only about 20-30cm away - roughly the distance to your face when feeding. They are hardwired to prefer human faces above all other visuals. Hold that gaze, make slow expressions, and let them stare.",tip:"Try raising your eyebrows very slowly. Many week-1 babies attempt to mirror this. It is one of the earliest signs of social connection."},
+{color:"ic-amber",lc:"lc-amber",icon:"🎵",cat:"SOUND",title:"Your voice is already familiar",body:"Your baby has been hearing your voice since around 16 weeks in the womb. Talking, singing or humming is deeply familiar and calming - not stimulating. It is like hearing home after a very long journey.",tip:"You do not need to do anything special. Just narrate what you are doing. Your voice itself is the comfort."}
+],
+sleep:{title:"Sleep in week 1",body:"Your week-1 baby needs around 16-18 hours of sleep a day in very short chunks of 1-3 hours. They have no concept of day or night - sleep and wake cycles are governed entirely by hunger, which happens every 2-3 hours because their stomach is currently the size of a large marble. This is not a problem to fix. It is biology working correctly.",tips:["Safe sleep every single time: always on their back, on a firm flat mattress, in a clear cot or Moses basket, in the same room as you. No loose bedding, pillows, bumpers or toys in the sleep space ever.","Swaddling can help enormously in week 1. The Moro startle reflex causes arms to fling out suddenly and wake babies. Swaddling with arms in recreates the snug feeling of the womb and reduces startling. Always swaddle with hips loose not straight, and stop when they begin to roll.","Newborns are VERY noisy sleepers. Grunting, snuffling, sighing, squeaking and making faces are all completely normal during active REM sleep. You do not need to pick them up every time they make a sound. They are often still asleep."],qa:[{icon:"😴",q:"My baby grunts and squirms constantly - is something hurting them?",a:"Almost certainly not. Newborns in week 1 spend around 50% of their sleep in active REM sleep, which looks very restless with lots of movement, sounds and facial expressions. This is important for brain development. If they settle without feeding after a minute or two, they were never properly awake."},
+{icon:"🌙",q:"My baby will only sleep on me - is that okay?",a:"It is biological and extremely common in week 1. Your warmth, smell, heartbeat and movement are the safest and most familiar environment they have ever known. You are not creating bad habits. For safer sleep during the day, a bouncy chair on the floor or a firm Moses basket beside you are good starting points."},
+{icon:"😮",q:"My baby seems to stop breathing for a second then starts again",a:"Short pauses in breathing of up to 10 seconds are called periodic breathing and are normal in newborns as their respiratory system matures. If the pause lasts longer than 20 seconds, your baby goes blue or limp, or you are worried at all - call 999 immediately."}],
+techniques:[{title:"Swaddling",badge:"badge-newborn",label:"Newborn",body:"Swaddling mimics the snug feeling of the womb and reduces the Moro startle reflex. Fold one corner of a thin muslin down, lay baby with shoulders at the fold, wrap one side across and tuck under, fold the bottom up, then wrap the other side across. Key rules: hips and legs must be loose not straight, firm but not tight around the chest, stop immediately when any signs of rolling appear."},
+{title:"Shush-pat",badge:"badge-newborn",label:"Newborn",body:"Hold baby upright on your shoulder. Make a rhythmic shhhh sound directly near their ear - louder than you think, it needs to match the volume of the womb which was around 80 decibels. Simultaneously pat their back in a slow steady rhythm. Gradually slow both the shushing and patting as they settle."}]},
+normals:[{dot:"",q:"My baby's skin is peeling - is that normal?",a:"Yes, completely normal. Newborns lose the vernix coating from the womb and the outer layer of skin peels off in the first 1-2 weeks. No creams or lotions are needed - it resolves on its own."},
+{dot:"",q:"My baby's hands and feet look slightly blue",a:"Often normal in the first day or two as circulation settles. However if their lips or tongue look blue or they seem short of breath, contact your midwife or 111 straight away."},
+{dot:"amber",q:"My baby's skin and the whites of their eyes look yellow",a:"Newborn jaundice is very common and usually harmless, but always tell your midwife. They can check bilirubin levels with a simple skin test. Always get it checked even if baby seems fine."},
+{dot:"red",q:"My baby won't rouse or has not fed in over 4 hours",a:"Contact your midwife, health visitor or 111 promptly. Newborns must feed regularly in week 1 for blood sugar and bilirubin management."}],
+reassure:"In week 1, surviving is succeeding. Your baby does not need activities, stimulation or entertainment. Warmth, milk, your voice and your smell are genuinely everything."},
+
+{range:[1,1],weekLabel:'Week 2',
+today:[
+{color:"ic-rose",lc:"lc-rose",icon:"🛁",cat:"BONDING",title:"Try a warm bath together",body:"A shared bath - you in the bath, someone passing baby to you - can be a beautifully calming experience in week 2. The warm water and skin contact often deeply relaxes them. Their umbilical stump can get wet - just pat it dry afterwards.",tip:"Keep the water warm but not hot, around 37 degrees. Have a warm towel ready immediately - babies lose heat very quickly."},
+{color:"ic-sage",lc:"lc-sage",icon:"👁️",cat:"VISION",title:"Watch them begin to track your face",body:"By week 2 many babies begin to very briefly track a face or slow-moving object with their eyes. Hold your face about 25cm away, make eye contact, then move very slowly from side to side and watch whether their eyes attempt to follow.",tip:"This is the beginning of visual tracking - a major milestone. It will not last long but that brief moment of focus is genuinely significant."},
+{color:"ic-amber",lc:"lc-amber",icon:"🌿",cat:"WELLBEING",title:"Your first very short walk outside",body:"If you are feeling up to it, even 10 minutes of fresh morning daylight helps establish your baby's body clock. Natural light is one of the earliest ways to begin distinguishing day from night for a newborn. It is also genuinely good for you.",tip:"Do not feel you need a destination or a plan. Round the block and back is a complete success at week 2."}
+],
+sleep:{title:"Sleep in week 2",body:"Your baby still needs 16-18 hours of sleep in short chunks. Their stomach has grown slightly meaning feeds may be a little further apart for some babies. You may notice a very slight pattern beginning to emerge, though many babies will show no regularity yet. Either is completely normal. Night feeds remain essential and frequent.",tips:["Daylight exposure in the daytime actively helps set the circadian rhythm. Even sitting by a window or a short walk outside helps your baby's brain begin to distinguish day from night.","Keep night feeds as boring as possible - dim lights, minimal talking, straight back to sleep. This contrast with daytime begins to build the day and night association from week 2.","Grunting and straining during sleep, often called grunting baby syndrome, is very common in week 2 as your baby's digestive system works hard in a new environment. It is normal and resolves on its own."],qa:[{icon:"😴",q:"My baby grunts and strains so much during sleep - it looks painful",a:"This is called grunting baby syndrome and is extremely common in week 2. Your baby has not yet learned to relax their pelvic floor when passing wind or stools, so they bear down instead. Their face goes red and they grunt loudly but they are not in pain. It resolves naturally over the first few months."},
+{icon:"🌙",q:"My baby is more awake at night than during the day",a:"Their body clock is set to womb time - they were most active when you moved during the day which rocked them to sleep, and most restless at night. This reversal typically corrects itself over 6-8 weeks. Helping it along: bright environments and activity during the day, dim and quiet at night."},
+{icon:"😮",q:"My baby startles awake just as they fall asleep - arms fling out",a:"This is the Moro startle reflex - a primitive neurological response that is completely normal. It is triggered by the sensation of falling as they transition to sleep. Swaddling with arms in is the most effective solution. It usually fades by 3-4 months."}],
+techniques:[{title:"Swaddling",badge:"badge-newborn",label:"Newborn",body:"Still very effective in week 2, particularly for the Moro startle reflex. Use a thin breathable muslin. Ensure hips are loose. Stop when baby begins to show any signs of rolling."},
+{title:"Boring night feeds",badge:"badge-newborn",label:"Newborn",body:"Feed in dim light, avoid eye contact and chat, change the nappy only if necessary, and put straight back down without play or stimulation. This begins to teach the difference between day and night even in week 2."}]},
+normals:[{dot:"",q:"My baby has lost weight since birth - is that okay?",a:"Babies commonly lose up to 10% of their birth weight in the first week and regain it by day 10-14. Your midwife will weigh them regularly. If they have not regained birth weight by 2 weeks, your midwife will discuss feeding support."},
+{dot:"",q:"My baby's umbilical cord stump is still attached",a:"Normal - it usually falls off between 1-3 weeks. Keep it clean and dry, fold the nappy below it, and let air get to it. A little dried blood as it detaches is fine."},
+{dot:"amber",q:"The area around the umbilical cord stump looks red or smells",a:"A slight smell as it dries is common. Redness spreading onto the tummy skin, discharge, or warmth around it warrants a call to your health visitor or GP."},
+{dot:"amber",q:"My baby is still jaundiced at 2 weeks",a:"Jaundice persisting after 14 days should always be checked by your GP as it can sometimes indicate something that needs attention."}],
+reassure:"Week 2 - you are still in the very early days. Feed, rest, survive. Getting through each day is the entire job right now."},
+
+{range:[2,3],weekLabel:'Weeks 3-4',
+today:[
+{color:"ic-rose",lc:"lc-rose",icon:"🗣️",cat:"LANGUAGE",title:"Narrate absolutely everything",body:"At 3-4 weeks your baby's brain is absorbing language at an extraordinary rate even though they will not speak for a year. Narrate your whole day: I am putting on your vest now - this arm first, then this one. Hearing real sentences in context is how language is learned.",tip:"Use a slightly slower pace and higher pitch than normal. Babies are neurologically drawn to this parentese style and it actually accelerates language development."},
+{color:"ic-sage",lc:"lc-sage",icon:"🖤",cat:"VISUAL",title:"Introduce high-contrast black and white cards",body:"At 3-4 weeks your baby's vision is still developing. They respond strongly to high contrast shapes. Bold black and white patterns - stripes, checkerboards, spirals - are far more engaging than coloured toys at this exact age.",tip:"Hold the card still at 25cm, let them lock on, then move it very slowly. Search free newborn black and white visual cards to print some at home today."},
+{color:"ic-amber",lc:"lc-amber",icon:"🎵",cat:"SOUND",title:"Experiment with different calming sounds",body:"At 3-4 weeks you are beginning to discover what settles your particular baby. Try different sounds this week: white noise from a fan or extractor, your heartbeat holding them against your chest, your voice singing, or complete silence. Every baby has their own preference.",tip:"White noise should be around 60-65 decibels and placed at least 1 metre from baby's head - about the level of a quiet shower."}
+],
+sleep:{title:"Sleep at 3-4 weeks",body:"At 3-4 weeks most babies still sleep in 2-3 hour stretches and feed 8-12 times in 24 hours. Some babies will begin to show a slightly longer stretch, often after an evening feed, but this is not consistent yet and many will not for several more weeks. Both are completely normal.",tips:["The witching hour - intense cluster feeding and crying in the evenings - typically begins around 3-4 weeks and peaks at 6 weeks. It is thought to be your baby's way of building your milk supply for the night. It is exhausting but it is temporary.","Swaddling remains very effective at 3-4 weeks. The Moro reflex is still strong and swaddling is the most reliable way to prevent it waking your baby at sleep transitions.","White noise can be very effective for settling at this age. The womb was louder than you would expect - around 80 decibels. A white noise machine, fan, or free phone app played at moderate volume can help your baby feel secure."],qa:[{icon:"😴",q:"My baby makes so many noises and movements in sleep - is this normal at 3-4 weeks?",a:"Yes completely normal. At 3-4 weeks babies still spend around 50% of their sleep in active REM sleep which is visibly restless. You will see twitching, sucking movements, facial expressions, grunting and even brief cries. They are still asleep. Wait before you pick them up as they often settle without waking."},
+{icon:"🌙",q:"My baby cluster feeds for hours every evening and I am exhausted",a:"Cluster feeding in the evenings is biologically driven - it stimulates milk supply for the night and helps babies tank up before a longer sleep. It usually peaks at 6 weeks and improves significantly after that. You are not doing anything wrong and you are not running out of milk."},
+{icon:"😮",q:"My baby only sleeps for 45 minutes at a time every single time",a:"Very common at this age. Babies cycle through sleep stages in approximately 45-minute chunks. Many have not yet learned to link sleep cycles and wake fully at each transition. This usually improves gradually and does not mean anything is wrong."}],
+techniques:[{title:"Swaddling",badge:"badge-newborn",label:"Newborn",body:"Still very effective at 3-4 weeks for the Moro startle reflex. Use a thin breathable muslin wrap. Ensure legs and hips are loose and froggy, not straight. Stop swaddling as soon as any rolling begins."},
+{title:"White noise",badge:"badge-all",label:"All ages",body:"White noise mimics the continuous sound environment of the womb. Use it to settle baby and as a sleep association - the same sound at every sleep helps signal that sleep is coming. Keep it at moderate volume around 60-65dB and at least 1 metre away from baby."},
+{title:"The 5 S method",badge:"badge-newborn",label:"Newborn",body:"A sequence for settling newborns: Swaddle (wrap snugly), Side or Stomach hold (on their side or stomach to settle - never leave them to sleep this way), Shush (loud rhythmic shushing), Swing (gentle rhythmic motion), Suck (dummy or brief feed). Use in sequence with each step building on the last."}]},
+normals:[{dot:"",q:"My baby cries for hours every evening and nothing settles them",a:"Colic and the witching hour typically begin at 3-4 weeks and peak at 6 weeks. Your baby is not in pain - it is a combination of overtiredness, overstimulation and cluster feeding. It does resolve. Motion, white noise and a calm environment help the most."},
+{dot:"",q:"My baby startles awake constantly just as they fall asleep",a:"The Moro startle reflex - normal at 3-4 weeks. Swaddling is the most effective solution. It typically fades by 3-4 months."},
+{dot:"amber",q:"My baby is feeding constantly and I do not think they are getting enough",a:"At 3-4 weeks, feeding 8-12 times in 24 hours is normal and expected, especially breastfeeding which involves smaller volumes per feed. Signs feeding is working: 6 or more wet nappies a day, yellow seedy stools if breastfed, steady weight gain. If concerned contact your health visitor."}],
+reassure:"At 3-4 weeks you are still in the very early days. The fog is real and the exhaustion is profound. Being responsive to your baby, even imperfectly, is exactly what they need."},
+
+{range:[4,6],weekLabel:'Weeks 5-7',
+today:[
+{color:"ic-rose",lc:"lc-rose",icon:"😊",cat:"CONNECTION",title:"Watch closely for the first smile",body:"Social smiling typically begins between 6-8 weeks, but many babies offer a hint of it in weeks 5-7. Get close, make eye contact and smile slowly and broadly. Morning wake-ups are often the best window - your baby is rested and alert. When it arrives it is unmistakeable.",tip:"Their whole face lifts with a real social smile - cheeks, eyes, mouth all at once. It is completely different from the reflexive smiles you may have seen during sleep."},
+{color:"ic-sage",lc:"lc-sage",icon:"🌈",cat:"VISUAL",title:"Introduce bold colour - start with red",body:"At 5-7 weeks your baby's colour vision is beginning to develop, with red being the first colour they can distinguish clearly. A bold red object held at about 30cm is far more engaging than pastel colours right now.",tip:"Move it very slowly from one side to the other at eye level. Tracking a moving object is a major visual milestone at this exact age."},
+{color:"ic-amber",lc:"lc-amber",icon:"🛁",cat:"ROUTINE",title:"Begin a simple evening wind-down",body:"At 5-7 weeks it is not too early to introduce 2-3 calming steps each evening in the same order: a warm wash or bath, a feed in a dimmer quieter room, and a song or phrase. The routine itself is not what matters yet - it is beginning to create a consistent association with sleep.",tip:"The same song or phrase every single time is powerful. You will know it is working when they start to calm just on hearing it."},
+{color:"ic-purple",lc:"lc-purple",icon:"🤸",cat:"PHYSICAL",title:"First tummy time - on your chest",body:"Tummy time on the floor can wait. Start with tummy time on your chest. Lie back slightly, lay baby face-down on your chest and let them try to lift their head. Even 2-3 minutes builds the neck muscles they will need for everything that comes next.",tip:"Do this after a feed when they are alert and content. If they seem frustrated, end it. Short and positive is far better than long and distressing."}
+],
+sleep:{title:"Sleep at 5-7 weeks - the hardest point",body:"Weeks 5-7 are often the hardest sleep weeks of the whole first year. Crying is at its peak around 6 weeks, night wake-ups feel relentless, and cluster feeding in the evenings can last for hours. This is not a sign that anything is wrong. It is the top of the curve - and most parents notice a genuine improvement from around 8 weeks onwards.",tips:["Swaddling remains very effective at 5-7 weeks. If you have not tried it yet, this is still a good time to start. Use a thin breathable fabric, arms in, hips loose.","A consistent rough bedtime - even just as a target - helps more than most people expect at this age. Aim for the same 30-minute window each evening even if actual sleep varies a lot.","At 6 weeks many babies will attempt to stay awake for longer stretches during the day. Watch for overtiredness - a baby awake for more than 1-1.5 hours at this age usually needs help to sleep."],qa:[{icon:"😴",q:"My baby has got worse at sleeping at 6 weeks - I thought it would be improving by now",a:"6 weeks is typically the peak of infant crying and unsettledness. It feels like it is getting worse because it is, briefly. Most parents notice genuine improvement from around 8-10 weeks. Hang on - it is coming."},
+{icon:"🌙",q:"My baby screams and is inconsolable every evening for hours",a:"This is the witching hour or colic. It peaks at 6 weeks and usually resolves significantly by 12 weeks. The most effective approaches are motion in a sling or bouncing, white noise, a calm parent which is harder than it sounds, and knowing it will end. There is nothing medically wrong with your baby."},
+{icon:"😮",q:"My baby wakes the moment I try to put them down - how do I transfer them?",a:"Hold them for 10-15 minutes after they fall asleep before attempting the transfer. Lower them bottom-first, then back, then head. Keep your hand on their chest for a full minute after setting them down. Sheets warmed briefly with a hot water bottle then removed before baby goes in can help with the temperature change."}],
+techniques:[{title:"Swaddling",badge:"badge-newborn",label:"Newborn",body:"Still the most effective sleep aid at 5-7 weeks. The Moro reflex is strong. Use a thin muslin, arms in, hips loose. Never swaddle when baby might roll."},
+{title:"The cot transfer",badge:"badge-newborn",label:"Newborn",body:"Lower baby bottom-first into the cot. Gently lay their back down. Lower their head last - it is the head touching down suddenly that triggers the Moro reflex. Keep both hands on them for 30-60 seconds. Then very slowly withdraw one hand, then the other. Stay near for a moment before stepping back."},
+{title:"Contact napping in a sling",badge:"badge-all",label:"All ages",body:"A safely fitted sling allows baby to nap on you while you have both hands free. Follow TICKS: Tight, In view always, Close enough to kiss, Keep chin off chest, Supported back. A sling library consultant can check your fit for free - search sling library and your town."}]},
+normals:[{dot:"",q:"My baby cries for 2-3 hours every evening",a:"Peak colic and witching hour - most common at 6 weeks, usually much better by 12 weeks. It is not a sign anything is wrong with your baby or your parenting."},
+{dot:"",q:"My baby is suddenly much harder to settle for naps",a:"Common at 5-7 weeks as babies become more alert. Shorter wake windows of maximum 1-1.5 hours at this age and a consistent pre-nap routine help significantly."},
+{dot:"amber",q:"My baby seems to be in pain - drawing up legs and arching back",a:"Reflux is common at 5-7 weeks as the lower oesophageal sphincter matures. If your baby is feeding normally and gaining weight, mild reflux is usually manageable with upright time after feeds. If they are distressed and not feeding well, speak to your GP."},
+{dot:"amber",q:"My baby still has not smiled at 7 weeks",a:"Social smiling can arrive anywhere from 6-10 weeks. If there is no smile by 8 weeks, mention it at your health visitor check but do not be concerned yet at 7 weeks."}],
+reassure:"At 5-7 weeks you are at the hardest point. 6 weeks is statistically the peak of crying. Most parents notice things getting better from 8-10 weeks. You are nearly at the top of the hill."},
+
+{range:[7,10],weekLabel:'Weeks 8-11',
+today:[
+{color:"ic-rose",lc:"lc-rose",icon:"😊",cat:"CONNECTION",title:"Respond to every smile enthusiastically",body:"If the first social smile has arrived, milk it. Copy it back, exaggerate your response, and pause to wait for theirs. This back-and-forth is the very beginning of conversation. Responding enthusiastically to early smiles directly encourages more of them and builds the neural pathways for communication.",tip:"Babies this age smile most readily in the morning after their first feed when they are rested, fed and alert. That is your best window for face-to-face time."},
+{color:"ic-sage",lc:"lc-sage",icon:"🗣️",cat:"LANGUAGE",title:"Copy their sounds and wait",body:"At 8-11 weeks babies begin to produce intentional vowel sounds - ahh, ohh, ehh. When they make a sound, copy it back exactly and then wait. A pause of 5-10 seconds. They will often respond again. This is serve and return - the foundational building block of language.",tip:"The pause is the most important part. Most adults do not wait long enough. Babies at this age need more processing time than we instinctively give them."},
+{color:"ic-amber",lc:"lc-amber",icon:"🛁",cat:"ROUTINE",title:"Firm up the bedtime routine",body:"At 8-11 weeks you should begin to see your bedtime routine working - baby beginning to calm or drowse as you move through the familiar steps. If it is not consistent yet, now is a good time to firm it up. Same steps, same order, same time each evening.",tip:"Aim for a bedtime between 7-8pm if possible. This broadly aligns with the natural dip in cortisol at this age and tends to produce a better first stretch of night sleep."},
+{color:"ic-purple",lc:"lc-purple",icon:"🤸",cat:"PHYSICAL",title:"Tummy time on the floor - build to 5 minutes",body:"At 8-11 weeks most babies tolerate tummy time on the floor better than in the early weeks. Try 2-3 sessions of 3-5 minutes across the day. Get on the floor at their level and make eye contact - they are working hard to lift their head and your face is the motivation.",tip:"If they still hate the floor, try a nursing pillow under their chest or tummy time across your lap. What matters is the position, not the surface."}
+],
+sleep:{title:"Sleep at 8-11 weeks - the first signs of improvement",body:"Most parents notice some improvement in sleep around 8-10 weeks. This is when one slightly longer night stretch often begins to emerge - typically 4-5 hours, sometimes after a later evening feed. Some babies will sleep longer; many will not, and both are within normal range. The key shift is that days and nights are beginning to make more sense to your baby.",tips:["A consistent bedtime time, same time plus or minus 30 minutes, makes a significant difference from around 8 weeks. The body clock is developing and responds to consistent sleep and wake times.","Daylight exposure in the morning continues to be one of the most effective things you can do. Even 20-30 minutes near a window or outside in the morning helps set the circadian rhythm.","If your baby is still being swaddled, watch closely from around 10 weeks for any signs of rolling - pushing up on arms during tummy time, rocking from side to side. You must stop swaddling before rolling begins."],qa:[{icon:"😴",q:"My baby is still noisy and wriggly in their sleep at 9-10 weeks - will this ever get better?",a:"Yes, gradually. The proportion of active noisy REM sleep does reduce as babies develop but it remains higher than in adults throughout the first year. Most babies remain audible sleepers well into the first year. Many parents find a white noise machine helps them sleep through their baby's normal sounds without waking unnecessarily."},
+{icon:"🌙",q:"My baby does a longer stretch but at the wrong time - early evening rather than overnight",a:"Very common at this age. Their longest sleep tends to happen at whatever point they first fall deeply asleep. To shift it later, try gently pushing their last afternoon nap slightly earlier, ending it by around 4pm, so they are ready for bed between 7-8pm. The long stretch should gradually move to coincide with your night."},
+{icon:"😮",q:"My baby will not be put down for any sleep at all - day or night",a:"Contact napping, only sleeping on you, is extremely common at 8-11 weeks and is biologically driven. A safely worn sling allows you to have your hands free during day naps. For night sleep, practicing the transfer after 15-20 minutes of deep sleep when they are limp and heavy, combined with warmed sheets, can help. This phase resolves with time for most babies."}],
+techniques:[{title:"Consistent bedtime routine",badge:"badge-all",label:"All ages",body:"Choose a bedtime between 7-8pm and a 3-4 step routine such as bath or wash, feed, song, sleep. Do the same sequence in the same order every night. Consistency over several weeks is what builds the association. The routine should take 15-20 minutes total."},
+{title:"Drowsy but awake",badge:"badge-all",label:"All ages",body:"After your bedtime routine, try putting baby down when they are drowsy but not fully asleep - eyes glazed, slowing movements, heavy limbs but still slightly awake. This teaches them to fall asleep in their sleep space rather than on you. It will not work every time at this age and that is fine. Even occasional success begins to build the skill."},
+{title:"Swaddle transition",badge:"badge-newborn",label:"From around 10 weeks",body:"When signs of rolling begin, transition away from full swaddling. Start by leaving one arm out for a week, then both arms out. Several products such as sleeping bags with arms or transitional swaddles can help bridge this. Never swaddle a baby who can roll."}]},
+normals:[{dot:"",q:"My baby has suddenly become much more alert and harder to settle",a:"Very common at 8-10 weeks as babies become more aware of the world. Shorter wake windows of 1.5-2 hours maximum at this age and a consistent pre-sleep routine help manage the new alertness."},
+{dot:"",q:"My baby smiled and then stopped for a while - have I done something wrong?",a:"Not at all. Early smiling comes and goes in waves. Babies go through periods of consolidating new skills and can seem to pause on them before they return more consistently. Completely normal."},
+{dot:"amber",q:"My baby has not smiled at all by 10 weeks",a:"Mention this at your next health visitor appointment. Social smiling usually begins 6-8 weeks but the range extends to around 12 weeks. Your health visitor will check for other developmental markers."}],
+reassure:"At 8-11 weeks things usually begin to feel a little more manageable. You know your baby better now. The worst of the crying peak is almost certainly behind you. You have done the hardest part."},
+
+{range:[11,17],weekLabel:'3-4 months',
+today:[
+{color:"ic-rose",lc:"lc-rose",icon:"🗣️",cat:"CONVERSATION",title:"Have a proper back-and-forth",body:"At 3-4 months your baby is reliably making sounds and beginning to understand that sounds get a response. Copy their vocalisations back and then wait - a genuine pause of several seconds. They will often respond again. This serve-and-return interaction is one of the most important things you can do for language development.",tip:"Maintain eye contact throughout. Your face and your voice together are far more effective than voice alone at this age."},
+{color:"ic-sage",lc:"lc-sage",icon:"🤸",cat:"PHYSICAL",title:"Tummy time - build to 10 minutes across the day",body:"At 3-4 months tummy time should be a regular daily activity totalling at least 10 minutes across 2-3 sessions. Many babies are beginning to lift their head to 45-90 degrees now. This builds the foundation for rolling, sitting and crawling.",tip:"A tummy time mirror laid flat on the floor gives your baby a reason to lift their head. Seeing their own reflection is genuinely motivating at this age."},
+{color:"ic-amber",lc:"lc-amber",icon:"👋",cat:"DISCOVERY",title:"Help them discover their hands",body:"At 3-4 months babies are fascinated by their own hands - they will stare at them, bring them together, swipe at things nearby. Hold a soft toy or rattle at midline directly in front of them and watch them bat or swipe at it. When they make contact their expression is priceless.",tip:"Keep mittens off as much as possible. Babies need to feel their own hands and fingers to understand them."},
+{color:"ic-purple",lc:"lc-purple",icon:"📖",cat:"LANGUAGE",title:"Read the same book every day",body:"At 3-4 months it does not matter if your baby understands the book. What matters is language rhythm, vocabulary exposure, and making reading feel like a warm positive experience. Repetition is not boring to a baby - it is exactly how learning works.",tip:"Board books with simple high-contrast images and short repetitive phrases are ideal. Faces, animals and everyday objects are the most engaging subjects at this age."}
+],
+sleep:{title:"Sleep at 3-4 months - the regression hits",body:"The 3-4 month sleep regression is one of the most significant sleep disruptions of the first year and it catches most parents off guard, often happening just as things were improving. As your baby's sleep architecture matures from simple newborn cycles to more adult-like cycles with multiple stages, they begin waking more fully between cycles and sometimes struggle to go back to sleep without help. This is a developmental leap, not something you caused.",tips:["The 4-month sleep regression typically lasts 2-6 weeks. Unlike other regressions, it is permanent - their sleep architecture has changed and will not go back. The good news is that many babies learn to navigate the new sleep cycles with consistent support.","A consistent early bedtime of 7-7:30pm is more important than ever during the regression. Overtiredness makes waking worse, not better.","If you were swaddling and have not already transitioned, the 4-month regression period is usually the point to do it. Babies are more mobile now and rolling becomes a safety concern."],qa:[{icon:"😴",q:"We were doing so well and now sleep has completely fallen apart - what happened?",a:"This is the 4-month sleep regression. As sleep cycles mature from simple newborn patterns to more complex adult-like ones, your baby passes through more light-sleep phases and wakes more fully between cycles. It is a permanent change in sleep architecture, not something you can undo. With consistent routines most babies gradually learn to navigate their new sleep cycles over the following weeks."},
+{icon:"🌙",q:"My baby wakes every 45 minutes or exactly 2 hours all night",a:"This is classic sleep-cycle waking. Your baby is waking at the end of each sleep cycle and needs help back to sleep. The goal over time is for them to learn to link cycles independently. A consistent response from you gives the best foundation."},
+{icon:"😮",q:"My baby used to be swaddled and now fights it - is it time to stop?",a:"Almost certainly yes at 3-4 months. If they are fighting the swaddle, rolling in it, or breaking out of it, it is time to transition. A sleeping bag or transitional swaddle with one arm out then both is the gentlest approach. Most babies adapt within a week."}],
+techniques:[{title:"Early bedtime 7-7:30pm",badge:"badge-all",label:"3 months plus",body:"At 3-4 months the circadian rhythm is more established and an early bedtime actively helps sleep quality. Counter-intuitively, an earlier bedtime tends to produce a longer first stretch of sleep. Overtiredness disrupts sleep rather than increasing its length. Aim for sleep onset between 7-7:30pm."},
+{title:"Consistent response to night waking",badge:"badge-all",label:"All ages",body:"During the 4-month regression, decide on a consistent response to night waking and stick to it. Frequent changes in response are harder for babies to adapt to than any single consistent approach. Whether you feed, rock, use a dummy, or pause and wait - consistency helps baby predict what will happen next."},
+{title:"Swaddle to sleeping bag transition",badge:"badge-all",label:"3-4 months",body:"Transition away from swaddling by leaving one arm free for 1 week, then both arms free. A 0-6 month sleeping bag or transitional swaddle product can help. Expect 3-7 days of disrupted sleep during the changeover before improvement."}]},
+normals:[{dot:"",q:"Sleep has got dramatically worse after weeks of improvement",a:"The 4-month sleep regression. Normal, developmental and temporary. Nothing you did caused it."},
+{dot:"",q:"My baby dribbles constantly and chews everything at 3 months",a:"Normal - salivary glands become active around 3-4 months. Does not necessarily mean teething yet, though early teething is possible from 3 months for some babies."},
+{dot:"",q:"My baby laughs now and it is the greatest sound in the world",a:"Yes. Laughter typically begins at 3-4 months. Your baby finds you hilarious. Lean into it entirely."},
+{dot:"amber",q:"My baby is not holding their head steady when held upright at 3 months",a:"Some head wobble at 3 months is expected, but by 4 months most babies should have good head control when held upright. Mention it at your health visitor check if you are concerned at 4 months."}],
+reassure:"3-4 months is often called the golden period - interactive, smiley and genuinely lovely. And then the regression hits. You have not done anything wrong and this is not your new normal."},
+
+{range:[18,25],weekLabel:'4-6 months',
+today:[
+{color:"ic-rose",lc:"lc-rose",icon:"🪞",cat:"DISCOVERY",title:"Mirror play",body:"At 4-6 months babies are fascinated by their reflection - they do not know it is themselves yet, but they treat the other baby as the most interesting social partner they have encountered. Make faces together in a mirror, point to their features, copy their expressions.",tip:"Unbreakable baby-safe mirrors placed low on a wall or laid flat for tummy time give babies independent visual entertainment."},
+{color:"ic-sage",lc:"lc-sage",icon:"🌿",cat:"SENSORY",title:"Texture treasure basket",body:"At 4-6 months babies explore the world primarily through their mouths and hands. A small basket of safe household items with different textures - a wooden spoon, a soft cloth, a rubber spatula, a crinkle fabric - gives rich sensory information. You do not need to buy anything.",tip:"Always supervise - everything goes in the mouth, which is exactly correct for this age. Choose items that are clean, large enough not to be a choking hazard, and will not splinter."},
+{color:"ic-amber",lc:"lc-amber",icon:"🎵",cat:"MOVEMENT",title:"Dancing with purpose",body:"At 4-6 months dancing together stimulates the vestibular system for balance, encourages head control, and exposes your baby to rhythm and music which supports later mathematical and language development.",tip:"Try varying the rhythm and speed - a slow waltz followed by a quick bounce. The change in pace is engaging and gently challenges their balance system."},
+{color:"ic-purple",lc:"lc-purple",icon:"🤲",cat:"PHYSICAL",title:"Supported sitting - briefly",body:"At 4-6 months babies are beginning to develop trunk control. Support them gently in a sitting position, your hands on their hips or a nursing pillow behind them, for short periods of 1-2 minutes. They will topple, and that wobbling and self-correction is the actual work.",tip:"Always supervise closely. They will fall over, which is harmless on a soft surface, but never leave them unsupported."}
+],
+sleep:{title:"Sleep at 4-6 months - finding a new normal",body:"After the 3-4 month regression, many babies begin to settle into a more predictable pattern with often 2-3 naps during the day and a longer first stretch at night. But variation remains huge. Some babies sleep through from 4 months; many others will not for many more months, and both are entirely within the normal range.",tips:["Most babies at 4-6 months have wake windows of 1.5-2.5 hours - the time they can comfortably stay awake between sleeps before becoming overtired. Watching wake windows rather than the clock is usually more effective.","Nap schedule at this age typically looks like: morning nap around 9am, lunchtime nap around 12:30pm, and a short late afternoon nap around 3:30-4pm. The third nap is usually the first to go around 6-7 months.","A consistent place to sleep matters more at 4-6 months than it did in the newborn phase. Trying to do at least some naps in a cot begins to build the association between that environment and sleep."],qa:[{icon:"😴",q:"My baby still makes noises and moves a lot during sleep at 5 months",a:"Still normal at 5 months. Active sleep remains a significant proportion of total sleep throughout the first year. Grunts, sighs, brief vocalisations and movements are all expected. The key question is whether they settle again without waking - most of the time they will."},
+{icon:"🌙",q:"My baby has started waking at 5am every morning and will not go back to sleep",a:"Early waking is very common at this age. Common causes are overtiredness where an earlier bedtime, which sounds wrong but often works, a nap schedule that is slightly off, or too much light in the room. Blackout blinds are often transformative for early rising."},
+{icon:"😮",q:"Everyone says I should be sleep training at 4-6 months - do I have to?",a:"No. There is no requirement to sleep train, and no evidence that babies who are not sleep trained are disadvantaged. Many babies settle into better sleep naturally with consistent routines and without formal training. Sleep training is a personal choice. Speak to your health visitor if you want support navigating the options."}],
+techniques:[{title:"Wake windows approach",badge:"badge-all",label:"4 months plus",body:"Rather than watching the clock for nap times, watch your baby for sleepy cues - yawning, eye rubbing, going quiet, losing interest in toys. Most 4-6 month babies can comfortably stay awake for 1.5-2.5 hours. Starting the nap routine at the first sign of tiredness prevents overtiredness."},
+{title:"Sleeping bag",badge:"badge-all",label:"4 months plus",body:"If you are not already using one, a well-fitted sleeping bag in the appropriate tog for room temperature removes the need for blankets, simplifies the sleep environment, and tends to become a strong sleep cue in itself. Use 2.5 tog for normal UK room temperatures of 16-20 degrees, and 1 tog for warmer rooms."},
+{title:"Blackout blinds",badge:"badge-all",label:"All ages",body:"Light is one of the most powerful suppressors of melatonin production. A genuinely dark room, proper blackout not just dark curtains, can make a significant difference to both nap length and early morning waking. Travel blackout blinds are useful for holidays and grandparents houses."}]},
+normals:[{dot:"",q:"My baby wakes every 45 minutes or 2 hours on the dot",a:"Babies cycle through sleep stages in approximately 45-minute chunks. Waking at cycle transitions is normal - some babies link cycles independently, others need help. Both are normal at this age."},
+{dot:"",q:"My baby has found their feet and will not stop chewing them",a:"Completely normal and slightly wonderful. Finding and mouthing their feet is excellent body awareness and also demonstrates great hip flexibility."},
+{dot:"amber",q:"My baby is not rolling by 5 months",a:"Rolling typically happens between 4-6 months but some babies skip it entirely and go straight to sitting or crawling. If not rolling by 6 months, mention it at their developmental check."},
+{dot:"amber",q:"Everyone is telling me to wean but I do not think my baby is ready",a:"NHS guidance is to begin weaning at around 6 months, not before 4 months. Signs of readiness: sitting with minimal support, losing the tongue-thrust reflex, showing genuine interest in food. Do not feel pressured by anyone else's timeline."}],
+reassure:"4-6 months is when babies start to become genuinely interactive and fun. The comparison game can feel intense - trust your instincts about your own baby's readiness and timeline."},
+
+{range:[26,39],weekLabel:'6-9 months',
+today:[
+{color:"ic-rose",lc:"lc-rose",icon:"🍌",cat:"WEANING",title:"Let them really explore food",body:"At 6-9 months weaning is about exposure, exploration and enjoyment rather than nutrition. Milk remains the main nutrition source until 12 months. Let them pick up pieces of food, squish it, spread it on the tray, and throw it. Sensory exploration of food is how food acceptance is built.",tip:"Gagging is normal and protective - it is different from choking. Gagging is noisy and the baby is in control. Learn the difference before you start and trust the process."},
+{color:"ic-sage",lc:"lc-sage",icon:"🧱",cat:"PLAY",title:"Cause-and-effect play",body:"At 6-9 months babies are developing the understanding that their actions cause things to happen. Stacking cups that topple, a button that makes a sound, or dropping an object for you to pick up again and again - this is serious cognitive work dressed up as play.",tip:"The drop and retrieve game is not them teasing you. It is them testing object permanence and cause and effect. Every single retrieval is genuinely worthwhile."},
+{color:"ic-amber",lc:"lc-amber",icon:"🗣️",cat:"LANGUAGE",title:"Name everything clearly and repeatedly",body:"At 6-9 months your baby is building a receptive vocabulary of words they understand that is far ahead of their expressive vocabulary of words they can say. Point at objects and name them clearly: dog, cup, door. By 9 months most babies recognise their own name and several common words.",tip:"What is that followed by a pause is particularly powerful. It invites them to respond even if the response is just a look toward the object."},
+{color:"ic-purple",lc:"lc-purple",icon:"👋",cat:"SOCIAL",title:"Peek-a-boo and hiding games",body:"At 6-9 months object permanence is developing - your baby is beginning to understand that things continue to exist when hidden. Peek-a-boo, hiding a toy under a cloth and revealing it, or hiding your face behind your hands. Their delight at the reappearance is genuine cognitive excitement.",tip:"Try hiding the toy under a cloth with them watching then wait. At around 8 months many babies will actively try to pull the cloth away. That is a huge developmental moment."}
+],
+sleep:{title:"Sleep at 6-9 months - separation anxiety arrives",body:"Many babies drop to 2 naps between 6-8 months, usually losing the late afternoon nap first. Night sleep varies enormously - some babies sleep through, many do not, and both are normal. A significant new disruptor at this age is separation anxiety, which typically peaks at 8-10 months and frequently disrupts previously settled sleep.",tips:["Separation anxiety at 8-10 months is a developmental milestone and a sign of healthy attachment. Your baby is aware you exist when you are not there and wants you back. Brief calm check-ins rather than full pickups help reassure without fully waking them.","The 2-nap schedule usually looks like: morning nap around 9-9:30am for 45-60 minutes and lunchtime nap around 12:30-1pm for 1-1.5 hours. Keep the wake window before bedtime at 2.5-3.5 hours to avoid overtiredness.","Teething can significantly disrupt sleep from 6 months. A cold teething ring before bed, teething gel applied to the gums, and infant paracetamol or ibuprofen if recommended by your pharmacist can help on the worst nights."],qa:[{icon:"😴",q:"My baby who was sleeping well has suddenly started waking and crying every hour at 8-9 months",a:"Separation anxiety is the most likely culprit at 8-9 months. Your baby has developed the cognitive awareness that you exist when you are not there and is distressed by your absence. It is a completely normal developmental phase. Brief calm consistent check-ins without fully picking up usually help it resolve over 2-4 weeks."},
+{icon:"🌙",q:"My baby keeps standing up in their cot and then crying because they cannot get back down",a:"Classic 8-9 month sleep disruptor. They have mastered pulling to stand but have not yet learned to lower themselves back down. Practice sitting down from standing during the day holding their hands and helping them lower slowly. It usually resolves within 2-3 weeks once they master the movement."},
+{icon:"😮",q:"My baby still is not sleeping through at 9 months and everyone says they should be",a:"Around 70% of 9-month-olds still wake overnight. This is normal. Sleeping through consistently is a developmental milestone that babies reach at different ages and cannot be forced. If you are exhausted and want support, speak to your health visitor about gentle approaches."}],
+techniques:[{title:"Brief check-ins for separation anxiety",badge:"badge-all",label:"6 months plus",body:"When baby wakes calling for you: wait 2-3 minutes before going in as they may resettle. When you go in, keep it brief and calm - a reassuring hand on their chest, a quiet reassurance, then leave. Gradually increase the time before you go in over several nights. Consistency is the key."},
+{title:"2-nap schedule",badge:"badge-all",label:"6-8 months",body:"Morning nap: wake baby no later than 10am to protect the lunchtime nap. Lunchtime nap: start between 12-1pm, allow up to 2 hours, wake by 3pm at the latest. Keep bedtime between 7-7:30pm with a 2.5-3.5 hour wake window before bed. This prevents the overtiredness that causes early morning waking and frequent night waking."}]},
+normals:[{dot:"",q:"My baby is suddenly extremely clingy and cries whenever I leave the room",a:"Separation anxiety peaks at 8-10 months and is a sign of healthy secure attachment. Hard but completely healthy and temporary."},
+{dot:"",q:"My baby is not crawling - should I be worried?",a:"Not all babies crawl - some bottom-shuffle, some roll everywhere, some go straight to pulling up to stand. As long as they are moving and developing in other ways, this is usually fine. Mention it at the 9-12 month review."},
+{dot:"amber",q:"My baby still is not sleeping through at 9 months",a:"Around 70% of babies still wake at night at 9 months. Normal. Speak to your health visitor if you want support."},
+{dot:"red",q:"My baby seems to have lost skills - stopped babbling, less eye contact than before",a:"A regression in previously acquired skills always warrants a prompt GP appointment. Please do not wait for the next routine check."}],
+reassure:"6-9 months is full of huge developmental leaps - but also teething, separation anxiety and often disrupted sleep. Peaks and valleys are all normal. You are doing better than you think."},
+
+{range:[40,52],weekLabel:'9-12 months',
+today:[
+{color:"ic-rose",lc:"lc-rose",icon:"👣",cat:"MOVEMENT",title:"Encourage cruising and standing",body:"At 9-12 months babies who are pulling to stand are ready to begin cruising - walking sideways while holding onto furniture. Place interesting toys slightly out of reach along the sofa to motivate them to move. Getting up and down independently builds the strength and confidence needed for first steps.",tip:"Bare feet on a safe floor is always better than socks or shoes for early walking. Babies use their toes to grip and feel the ground which is essential for balance development."},
+{color:"ic-sage",lc:"lc-sage",icon:"📚",cat:"LANGUAGE",title:"Ask questions and wait for a response",body:"At 9-12 months your baby understands far more than they can say. Where is the ball? Can you find the dog? Asking simple questions and waiting 5-10 seconds builds comprehension and teaches them that their communication matters. Following their eyes or point to an object is a response worth celebrating.",tip:"First words typically arrive between 10-14 months. Consistent labelling of the same objects repeatedly is what builds that vocabulary in the weeks beforehand."},
+{color:"ic-amber",lc:"lc-amber",icon:"🎨",cat:"CREATIVITY",title:"First mark-making",body:"At 9-12 months babies can hold a chunky crayon and will begin to make marks on paper - a huge cognitive realisation that their movement creates a lasting change in the world. Do not demonstrate - let them discover it themselves.",tip:"Edible finger paint made from food colouring mixed into Greek yogurt is perfect if everything goes in the mouth, and it will. Or a tray of water and a brush on a wall - no mess at all."},
+{color:"ic-purple",lc:"lc-purple",icon:"🤝",cat:"SOCIAL",title:"Join their pretend play",body:"At 9-12 months the earliest form of pretend play begins to emerge - feeding a teddy, pressing a toy phone to their ear, stirring in a pot. Join in by doing the same, copy their actions, and name what they are doing. This validates and extends the play.",tip:"Simple wooden or fabric dolls, toy animals, toy cups and plates and play food are ideal for this stage. They are open-ended and the baby's imagination does all the work."}
+],
+sleep:{title:"Sleep at 9-12 months - settling towards one nap",body:"Most babies at 9-12 months are on 2 naps, though the transition to 1 nap often begins between 12-18 months. Night sleep is still highly variable - some babies sleep through, many continue to wake, and night feeds are still normal and appropriate at this age. Teething is a frequent disruptor throughout this period.",tips:["Signs of readiness for the 2-to-1 nap transition usually at 12-18 months not before 12 months: consistently fighting one nap, naps running too close together, early morning waking. The transition takes 2-4 weeks and often involves temporarily worse sleep - it is worth pushing through.","Teething can cause significant sleep disruption from 6-24 months. The molars arriving around 12-16 months are often the most painful. A teether, cold flannel, or dentist-recommended teething gel before bed can help on the worst nights.","Blackout blinds become increasingly important at this age as babies become more sensitive to light. A room that is genuinely dark makes a meaningful difference to both nap length and early waking."],qa:[{icon:"😴",q:"My 10-month-old is waking at 5am and will not go back to sleep",a:"Early waking is very common at 9-12 months. Main causes are overtiredness where an earlier bedtime is counter-intuitive but often effective, too much light in the room where blackout blinds help, or the morning nap starting too early. A genuine 5am start often responds best to a bedtime of 6:30-7pm."},
+{icon:"🌙",q:"My baby pulls to stand in their cot at every wake-up even at 2am and then cries",a:"A classic disruptor at this age. They have mastered standing but cannot yet get back down. Practice the sit-down movement from standing during the day repeatedly. Most babies crack it within 1-3 weeks and the night waking resolves."},
+{icon:"😮",q:"My baby still wakes for a feed at night at 11 months - should I stop this?",a:"Night feeding at 11 months is completely normal and nutritionally appropriate, especially if breastfeeding. There is no medical reason to stop unless you choose to. If you want to gently reduce night feeds, speak to your health visitor about approaches that suit your family."}],
+techniques:[{title:"Gradual retreat for night waking",badge:"badge-all",label:"9 months plus",body:"For babies who need parental presence to fall back to sleep: start by sitting right next to the cot when they wake, then over 2 weeks gradually move your position further from the cot and toward the door, then outside the door. The gradual distance teaches baby to sleep with decreasing amounts of your presence."},
+{title:"Managing the 2-to-1 nap transition",badge:"badge-all",label:"12-18 months",body:"When beginning the transition: push the morning nap gradually later by 15 minutes every 2-3 days until it sits at around 11:30am to 12pm. Keep that nap to a maximum of 2 hours. Bring bedtime earlier to 6:30-7pm during the transition to compensate for the lost nap sleep. Expect 2-4 weeks of disrupted sleep during the changeover."}]},
+normals:[{dot:"",q:"My baby is not walking at 12 months",a:"Most babies walk independently between 10-14 months but the normal range extends to 18 months. As long as they are pulling to stand and cruising furniture, development is on track."},
+{dot:"",q:"My baby only has 1-2 words at 12 months",a:"First words typically appear between 10-14 months. Having 1-3 clear words by 12 months is normal. Comprehension matters as much as spoken words at this stage."},
+{dot:"amber",q:"My baby does not point at things by 12 months",a:"Pointing to share interest, not just to request, is a key milestone around 12 months. If not pointing by 12-14 months, mention it at the 12-month check."},
+{dot:"red",q:"My baby has lost skills - stopped waving or clapping, babbles less than before",a:"Any regression in previously acquired skills warrants a prompt GP appointment. Please do not wait for a routine appointment."}],
+reassure:"The last months of the first year are intense - your baby is becoming a toddler right in front of you. Some days are genuinely magical. Others are absolutely relentless. Both are allowed and both are normal."}
+];
+
+function getDataForWeeks(w){for(var i=0;i<ageData.length;i++){if(w>=ageData[i].range[0]&&w<=ageData[i].range[1])return ageData[i];}return ageData[ageData.length-1];}
+function weeksOld(dob){return Math.max(0,Math.floor((new Date()-new Date(dob))/(1000*60*60*24*7)));}
+function daysOld(dob){return Math.max(0,Math.floor((new Date()-new Date(dob))/(1000*60*60*24)));}
+function formatAge(w){if(w===0)return'Less than 1 week old';if(w===1)return'1 week old';if(w<13)return w+' weeks old';var m=Math.floor(w/4.33);var rw=Math.round(w-(m*4.33));if(rw===0)return m+' month'+(m===1?'':'s')+' old';return m+' month'+(m===1?'':'s')+' and '+rw+' week'+(rw===1?'':'s')+' old';}
+
+var checkState={};
+var activePlaceFilter='all';
+
+function buildUrl(type,query,url){var loc=userPostcode?userPostcode:'near me';if(type==='maps')return'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(query+' '+loc);if(type==='search')return'https://www.google.com/search?q='+encodeURIComponent(query+' '+loc);if(type==='link')return url;return'#';}
+
+function renderPlaces(){
+  var filtered=activePlaceFilter==='all'?places:places.filter(p=>p.tags.includes(activePlaceFilter));
+  var html='';
+  filtered.forEach(function(p,i){
+    var tagHtml=p.tags.map(t=>t==='foot'?'<span class="pc-tag tag-foot">On foot</span>':t==='drive'?'<span class="pc-tag tag-drive">By car</span>':'<span class="pc-tag tag-free">Free</span>').join('');
+    var tipsHtml=p.tips.map(t=>'<div class="pc-tip-item">'+t+'</div>').join('');
+    var btnHtml=p.searches.map(function(s){var u=buildUrl(s.type,s.query||'',s.url||'');var cls=s.type==='maps'?'maps':s.type==='link'?'ext':'search';return'<button class="loc-btn '+cls+'" onclick="openLink(\''+u+'\')">'+s.label+'</button>';}).join('');
+    html+='<div class="place-card" id="pc'+i+'"><div class="pc-top" onclick="togglePlace(\'pc'+i+'\')"><div class="pc-icon">'+p.icon+'</div><div class="pc-info"><div class="pc-title">'+p.title+'</div><div class="pc-tags">'+tagHtml+'</div></div><span class="pc-arr">▾</span></div><div class="pc-body"><div class="pc-desc">'+p.desc+'</div><div class="pc-tips">'+tipsHtml+'</div><div class="local-btns">'+btnHtml+'</div></div></div>';
+  });
+  document.getElementById('places-list').innerHTML=html;
+  var sub=document.getElementById('places-sub');
+  if(sub)sub.textContent=userPostcode?'Showing local links for '+userPostcode+' - buttons open results near you.':'Tap a place for ideas - add your postcode in setup for local search links.';
+}
+
+function togglePlace(id){document.getElementById(id).classList.toggle('open');}
+function filterPlaces(tag,btn){activePlaceFilter=tag;document.querySelectorAll('.tf').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderPlaces();}
+function loadCheckState(){try{var r=localStorage.getItem(CL_KEY);if(r)checkState=JSON.parse(r);}catch(e){checkState={};}}
+function saveCheckState(){try{localStorage.setItem(CL_KEY,JSON.stringify(checkState));}catch(e){}}
+function resetChecklist(){checkState={};saveCheckState();renderChecklist();}
+function toggleCheck(id){checkState[id]=!checkState[id];saveCheckState();renderChecklist();}
+function renderChecklist(){
+  var done=checklistItems.filter(i=>checkState[i.id]).length;
+  document.getElementById('cl-progress').textContent=done+'/'+checklistItems.length+' packed';
+  document.getElementById('checklist-grid').innerHTML=checklistItems.map(function(item){var ch=!!checkState[item.id];return'<div class="cl-item" onclick="toggleCheck(\''+item.id+'\')"><div class="cl-box'+(ch?' checked':'')+'"></div><div class="cl-text'+(ch?' checked':'')+'">'+item.label+'</div></div>';}).join('');
+}
+
+function saveSetup(){
+  var dob=document.getElementById('dob-input').value;
+  var pc=document.getElementById('postcode-input').value.trim().toUpperCase().replace(/\s+/g,' ');
+  if(!dob){alert('Please enter your baby\'s birth date.');return;}
+  if(new Date(dob)>new Date()){alert('Birth date cannot be in the future!');return;}
+  localStorage.setItem(DOB_KEY,dob);
+  if(pc)localStorage.setItem(PC_KEY,pc);else localStorage.removeItem(PC_KEY);
+  userPostcode=pc;
+  loadWithData(dob,pc);
+}
+function showSetup(){
+  document.getElementById('setup-section').style.display='block';
+  document.getElementById('age-section').style.display='none';
+  document.getElementById('main-content').style.display='none';
+  var d=localStorage.getItem(DOB_KEY);var p=localStorage.getItem(PC_KEY);
+  if(d)document.getElementById('dob-input').value=d;
+  if(p)document.getElementById('postcode-input').value=p;
+}
+function loadWithData(dobStr,pc){
+  var w=weeksOld(dobStr);
+  var d=getDataForWeeks(w);
+  document.getElementById('age-display').textContent=formatAge(w);
+  var ld=document.getElementById('loc-dot');
+  ld.style.background=pc?'var(--sage)':'var(--amber)';
+  document.getElementById('loc-display').textContent=pc?pc+' - local links active':'No postcode - add one for local results';
+  var lb=document.getElementById('loc-banner');
+  if(lb){if(pc){lb.className='loc-banner lb-green';lb.innerHTML='<span>📍</span><span style="flex:1"><strong>'+pc+'</strong> - search and Maps buttons open results near you.</span><span class="lb-change" onclick="showSetup()">change</span>';}else{lb.className='loc-banner lb-amber';lb.innerHTML='<span>📍</span><span style="flex:1">Add your postcode in setup to get local search links for your area.</span><span class="lb-change" onclick="showSetup()">Add now</span>';}}
+  document.getElementById('setup-section').style.display='none';
+  document.getElementById('age-section').style.display='block';
+  document.getElementById('main-content').style.display='block';
+  renderContent(w,d);
+  loadCheckState();renderChecklist();renderPlaces();
+}
+function renderContent(weeks,d){
+  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var now=new Date();
+  document.getElementById('today-date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()];
+  document.getElementById('week-badge').textContent=d.weekLabel;
+  document.getElementById('today-cards').innerHTML=d.today.map(c=>'<div class="idea-card '+c.color+'"><div class="ic-top"><span style="font-size:16px">'+c.icon+'</span><span class="ic-label '+c.lc+'">'+c.cat+'</span></div><div class="ic-title">'+c.title+'</div><div class="ic-body">'+c.body+'</div>'+(c.tip?'<div class="ic-tip">'+c.tip+'</div>':'')+'</div>').join('');
+  var s=d.sleep;
+  var tipsHtml=s.tips.map(t=>'<div class="sg-tip">'+t+'</div>').join('');
+  document.getElementById('sleep-guide-card').innerHTML='<div class="sleep-guide"><div class="sg-label">Sleep guide</div><div class="sg-title">'+s.title+'</div><div class="sg-body">'+s.body+'</div>'+tipsHtml+'</div>';
+  if(s.techniques&&s.techniques.length){document.getElementById('sleep-techniques').innerHTML=s.techniques.map(t=>'<div class="technique-card" onclick="this.classList.toggle(\'open\')"><div class="tec-top"><span class="tec-badge '+t.badge+'">'+t.label+'</span><div class="tec-title">'+t.title+'</div><span class="tec-arr">▾</span></div><div class="tec-body">'+t.body+'</div></div>').join('');}else{document.getElementById('sleep-techniques').innerHTML='';}
+  if(s.qa&&s.qa.length){document.getElementById('sleep-qa-cards').innerHTML=s.qa.map(q=>'<div class="sleep-qa" onclick="this.classList.toggle(\'open\')"><div class="sqa-top"><span class="sqa-icon">'+q.icon+'</span><div class="sqa-q">'+q.q+'</div><span class="sqa-arr">▾</span></div><div class="sqa-body">'+q.a+'</div></div>').join('');}else{document.getElementById('sleep-qa-cards').innerHTML='';}
+  document.getElementById('reassure-strip').innerHTML='<div class="rs-title">A note for you right now</div><div class="rs-body">'+d.reassure+'</div>';
+  document.getElementById('normal-cards').innerHTML=d.normals.map(n=>'<div class="normal-card" onclick="this.classList.toggle(\'open\')"><div class="nc-top"><div class="nc-dot '+n.dot+'"></div><div class="nc-q">'+n.q+'</div><span class="nc-arr">▾</span></div><div class="nc-body">'+n.a+'</div></div>').join('');
+}
+function showTab(name,btn){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.ntab').forEach(b=>b.classList.remove('on'));document.getElementById('tab-'+name).classList.add('on');btn.classList.add('on');}
+function showCat(name,btn){document.querySelectorAll('.cat-section').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));document.getElementById('cat-'+name).classList.add('on');btn.classList.add('on');}
+function openLink(url){window.open(url,'_blank');}
+document.getElementById('dob-input').max=new Date().toISOString().split('T')[0];
+document.getElementById('postcode-input').addEventListener('input',function(){this.value=this.value.toUpperCase();});
+var savedDob=localStorage.getItem(DOB_KEY);
+var savedPc=localStorage.getItem(PC_KEY)||'';
+userPostcode=savedPc;
+if(savedDob){loadWithData(savedDob,savedPc);}
+
+</script>
+</div>
+</body>
+</html>
